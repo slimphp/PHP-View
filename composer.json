@@ -8,7 +8,7 @@
     }
   ],
   "require": {
-    "psr/http-message": "1.0"
+    "slim/slim": "3.0.0-RC1"
   },
   "autoload" :{
     "psr-4" : { "Slim\\" : "src" }

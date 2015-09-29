@@ -8,9 +8,6 @@
 
 namespace Slim;
 
-
-use Psr\Http\Message\ResponseInterface;
-
 class SlimRenderer
 {
     protected $templatePath = "";
@@ -19,7 +16,7 @@ class SlimRenderer
         $this->templatePath = $templatePath;
     }
 
-    public function render(ResponseInterface $response, $template = "", $data = []) {
+    public function render(\Slim\Http\Response $response, $template = "", $data = []) {
         extract($data);
         ob_start();
         include $this->templatePath . $template;
