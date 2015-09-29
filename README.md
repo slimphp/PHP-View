@@ -6,7 +6,7 @@ $container = $app->getContainer();
 $container['renderer'] = new SlimRenderer("./templates");
 
 $app->get('/hello/{name}', function ($request, $response, $args) {
-    return $this->renderer->render($response, "/hello.php");
+    return $this->renderer->render($response, "/hello.php", $args);
 });
 
 $app->run();
