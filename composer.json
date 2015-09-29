@@ -1,0 +1,16 @@
+{
+  "name": "geggleto/SlimRenderer",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Glenn Eggleton",
+      "email": "geggleto@gmail.com"
+    }
+  ],
+  "require": {
+    "psr/http-message": "1.0"
+  },
+  "autoload" :{
+    "psr-4" : { "Slim\\" : "src" }
+  }
+}
