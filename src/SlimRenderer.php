@@ -18,7 +18,7 @@ class SlimRenderer
         $this->templatePath = $templatePath;
     }
 
-    public function render(Response $response, $template = "", $data = []) {
+    public function render(Response $response, $template, array $data = []) {
 
         extract($data);
 

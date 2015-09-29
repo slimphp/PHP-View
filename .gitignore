@@ -5,3 +5,4 @@ vendor
 .idea
 clover.xml
 cache/
+composer.phar
