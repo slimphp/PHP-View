@@ -8,9 +8,9 @@
     }
   ],
   "require": {
-    "slim/slim": "3.0.0-RC1"
+    "slim/slim": "^3.0.0-RC1"
   },
   "autoload" :{
-    "psr-4" : { "Renderer\\" : "src" }
+    "psr-4" : { "Geggleto\\Renderer\\" : "src" }
   }
 }
