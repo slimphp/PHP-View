@@ -6,7 +6,7 @@
  * Time: 1:14 PM
  */
 
-namespace Renderer;
+namespace Geggleto;
 
 use Slim\Http\Response;
 
