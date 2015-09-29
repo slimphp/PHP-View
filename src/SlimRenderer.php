@@ -6,21 +6,20 @@
  * Time: 1:14 PM
  */
 
-namespace Geggleto;
+namespace Geggleto\Renderer;
 
 use Slim\Http\Response;
 
 /**
  * Class SlimRenderer
- *
- * @package Renderer
+ * @package Geggleto\Renderer
  */
 class SlimRenderer
 {
     /**
      * @var string
      */
-    protected $templatePath = "";
+    protected $templatePath;
 
     /**
      * SlimRenderer constructor.
@@ -38,8 +37,8 @@ class SlimRenderer
      * Inserts template into Response object
      *
      * @param \Slim\Http\Response $response
-     * @param                     $template
-     * @param array               $data
+     * @param string $template
+     * @param array $data
      * @return \Slim\Http\Response
      */
     public function render(Response $response, $template, array $data = [])

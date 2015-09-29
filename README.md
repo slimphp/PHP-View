@@ -1,9 +1,11 @@
 ## Usage
 
-```
+```php
 $app = new Slim\App();
 $container = $app->getContainer();
-$container['renderer'] = new SlimRenderer("./templates");
+$container['renderer'] = function () {
+    return new Geggleto\Renderer\SlimRenderer("./templates");
+};
 
 $app->get('/hello/{name}', function ($request, $response, $args) {
     //You will now have $name available in your template
