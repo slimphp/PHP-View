@@ -10,15 +10,40 @@ namespace Renderer;
 
 use Slim\Http\Response;
 
+/**
+ * Class SlimRenderer
+ *
+ * @package Renderer
+ */
 class SlimRenderer
 {
+    /**
+     * @var string
+     */
     protected $templatePath = "";
 
-    public function __construct($templatePath = "") {
+    /**
+     * SlimRenderer constructor.
+     *
+     * @param string $templatePath
+     */
+    public function __construct($templatePath = "")
+    {
         $this->templatePath = $templatePath;
     }
 
-    public function render(Response $response, $template, array $data = []) {
+    /**
+     * Render
+     *
+     * Inserts template into Response object
+     *
+     * @param \Slim\Http\Response $response
+     * @param                     $template
+     * @param array               $data
+     * @return \Slim\Http\Response
+     */
+    public function render(Response $response, $template, array $data = [])
+    {
 
         extract($data);
 
