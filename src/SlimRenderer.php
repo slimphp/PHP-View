@@ -6,7 +6,9 @@
  * Time: 1:14 PM
  */
 
-namespace Slim;
+namespace Renderer;
+
+use Slim\Http\Response;
 
 class SlimRenderer
 {
@@ -16,8 +18,10 @@ class SlimRenderer
         $this->templatePath = $templatePath;
     }
 
-    public function render(\Slim\Http\Response $response, $template = "", $data = []) {
+    public function render(Response $response, $template = "", $data = []) {
+
         extract($data);
+
         ob_start();
         include $this->templatePath . $template;
         $output = ob_get_clean();
