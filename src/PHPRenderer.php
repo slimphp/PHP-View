@@ -13,7 +13,7 @@ use Slim\Http\Response;
 /**
  * Class SlimRenderer
  * PSR-7 compatible PHP Renderer
- * 
+ *
  * @package Geggleto\Renderer
  */
 class PHPRenderer
