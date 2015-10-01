@@ -34,14 +34,20 @@ class PHPRenderer
     }
 
     /**
-     * Render
+     * Render a template
      *
-     * Inserts template into Response object
+     * $data cannot contain template as a key
+     *
+     * throws RuntimeException if $templatePath . $template does not exist
      *
      * @param \Slim\Http\Response $response
-     * @param string $template
-     * @param array $data
+     * @param                     $template
+     * @param array               $data
+     *
      * @return \Slim\Http\Response
+     *
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function render(Response $response, $template, array $data = [])
     {

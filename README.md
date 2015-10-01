@@ -1,3 +1,6 @@
+## PHP Renderer
+
+
 ## Usage
 
 ```php
@@ -14,3 +17,7 @@ $app->get('/hello/{name}', function ($request, $response, $args) {
 
 $app->run();
 ```
+
+## Exceptions
+`\RuntimeException` - if template does not exist
+`\InvalidArgumentException` - if $data contains 'template'
