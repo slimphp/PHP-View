@@ -43,6 +43,13 @@ class SlimRenderer
      */
     public function render(Response $response, $template, array $data = [])
     {
+        if (isset($data['template'])) {
+            throw new \InvalidArgumentException("Duplicate template key found");
+        }
+
+        if (!is_file($this->templatePath . $template)) {
+            throw new \RuntimeException("View cannot render `$template` because the template does not exist");
+        }
 
         extract($data);
 
