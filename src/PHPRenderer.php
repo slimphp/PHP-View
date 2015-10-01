@@ -8,7 +8,7 @@
 
 namespace Geggleto\Renderer;
 
-use Slim\Http\Response;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class SlimRenderer
@@ -49,7 +49,7 @@ class PHPRenderer
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function render(Response $response, $template, array $data = [])
+    public function render(ResponseInterface $response, $template, array $data = [])
     {
         if (isset($data['template'])) {
             throw new \InvalidArgumentException("Duplicate template key found");
@@ -65,6 +65,6 @@ class PHPRenderer
         include $this->templatePath . $template;
         $output = ob_get_clean();
 
-        return $response->write($output);
+        return $response->getBody()->write($output);
     }
 }

@@ -1,5 +1,5 @@
 ## PHP Renderer
-PHP Template Renderer for Slim
+PHP Template Renderer for Slim / PSR-7
 
 ## Usage
 
