@@ -6,16 +6,14 @@
  * @copyright Copyright (c) 2011-2015 Josh Lockhart
  * @license   https://github.com/slimphp/PHP-View/blob/master/LICENSE.md (MIT License)
  */
-
-namespace Geggleto\Renderer;
+namespace Slim\Views;
 
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class SlimRenderer
- * PSR-7 compatible PHP Renderer
+ * Php View
  *
- * @package Geggleto\Renderer
+ * PSR-7 compatible PHP renderer
  */
 class PHPRenderer
 {
