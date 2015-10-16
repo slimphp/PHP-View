@@ -1,9 +1,10 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Glenn
- * Date: 2015-09-29
- * Time: 1:14 PM
+ * Slim Framework (http://slimframework.com)
+ *
+ * @link      https://github.com/slimphp/Twig-View
+ * @copyright Copyright (c) 2011-2015 Josh Lockhart
+ * @license   https://github.com/slimphp/PHP-View/blob/master/LICENSE.md (MIT License)
  */
 
 namespace Geggleto\Renderer;
