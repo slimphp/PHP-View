@@ -39,11 +39,11 @@ class PhpRenderer
      *
      * throws RuntimeException if $templatePath . $template does not exist
      *
-     * @param \Slim\Http\Response $response
-     * @param                     $template
-     * @param array               $data
+     * @param \ResponseInterface $response
+     * @param                    $template
+     * @param array              $data
      *
-     * @return \Slim\Http\Response
+     * @return ResponseInterface
      *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
