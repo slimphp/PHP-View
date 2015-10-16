@@ -1,10 +1,11 @@
 ## PHP Renderer
-PHP Template Renderer for Slim / PSR-7
+
+This is a Slim Framework view renderer for rendering PHP view scripts into a PSR-7 Response object.
 
 ## Usage
 
 ```php
-use Geggleto\Renderer\PHPRenderer;
+use Slim\Views\PhpRenderer;
 
 include "vendor/autoload.php";
 

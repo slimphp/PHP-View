@@ -13,9 +13,9 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Php View
  *
- * PSR-7 compatible PHP renderer
+ * Render PHP view scripts into a PSR-7 Response object
  */
-class PHPRenderer
+class PhpRenderer
 {
     /**
      * @var string
