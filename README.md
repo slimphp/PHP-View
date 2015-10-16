@@ -1,6 +1,6 @@
 ## PHP Renderer
 
-This is a Slim Framework view renderer for rendering PHP view scripts into a PSR-7 Response object.
+This is a renderer for rendering PHP view scripts into a PSR-7 Response object. It works well with Slim Framework 3.
 
 ## Usage
 

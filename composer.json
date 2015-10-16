@@ -1,7 +1,7 @@
 {
   "name": "slim/php-view",
   "type" : "library",
-  "description": "Slim Framework view renderer for rendering PHP view scripts into a PSR-7 Response object.",
+  "description": "Render PHP view scripts into a PSR-7 Response object.",
   "keywords": ["slim","framework","view","template","php","phtml","renderer"],
   "license": "MIT",
   "authors": [
