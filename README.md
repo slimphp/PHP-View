@@ -2,7 +2,7 @@
 
 This is a renderer for rendering PHP view scripts into a PSR-7 Response object. It works well with Slim Framework 3.
 
-## Usage
+## Usage With Slim 3
 
 ```php
 use Slim\Views\PhpRenderer;
@@ -18,6 +18,15 @@ $app->get('/hello/{name}', function ($request, $response, $args) {
 });
 
 $app->run();
+```
+
+## Usage with any PSR-7 Project
+```php
+//Construct the View
+$phpView = new PhpRenderer("./path/to/templates");
+
+//Render a Template
+$response = $phpView->render(new Response(), "/path/to/template.php", $yourData);
 ```
 
 ## Exceptions
