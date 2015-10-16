@@ -11,7 +11,7 @@ include "vendor/autoload.php";
 
 $app = new Slim\App();
 $container = $app->getContainer();
-$container['renderer'] = new PHPRenderer("./templates");
+$container['renderer'] = new PhpRenderer("./templates");
 
 $app->get('/hello/{name}', function ($request, $response, $args) {
     return $this->renderer->render($response, "/hello.php", $args);
