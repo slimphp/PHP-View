@@ -1,5 +1,8 @@
 {
   "name": "geggleto/slim-renderer",
+  "type" : "library",
+  "description": "Slim Framework view renderer for rendering PHP view scripts into a PSR-7 Response object.",
+  "keywords": ["slim","framework","view","template","php","phtml","renderer"],
   "license": "MIT",
   "authors": [
     {
@@ -8,9 +11,11 @@
     }
   ],
   "require": {
-    "slim/slim": "^3.0.0-RC1"
+    "psr/http-message": "^1.0"
   },
-  "autoload" :{
-    "psr-4" : { "Geggleto\\Renderer\\" : "src" }
-  }
+    "autoload": {
+        "psr-4": {
+            "Slim\\Views\\": "src"
+        }
+    }
 }
