@@ -58,11 +58,14 @@ class PhpRenderer
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
         }
 
-        extract($data);
+        $render = function ($template, $data) {
+            extract($data);
+            include $template;
+        }
 
         ob_start();
-        include $this->templatePath . $template;
-        $output = ob_get_clean();
+        $render($this->templatePath . $template, $data);
+        $output = ob_get_clean(); 
 
         return $response->getBody()->write($output);
     }
