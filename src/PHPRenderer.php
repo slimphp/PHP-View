@@ -67,6 +67,8 @@ class PhpRenderer
         $render($this->templatePath . $template, $data);
         $output = ob_get_clean(); 
 
-        return $response->getBody()->write($output);
+        $response->getBody()->write($output);
+        
+        return $response;
     }
 }
