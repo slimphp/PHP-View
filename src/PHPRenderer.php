@@ -61,7 +61,7 @@ class PhpRenderer
         $render = function ($template, $data) {
             extract($data);
             include $template;
-        }
+        };
 
         ob_start();
         $render($this->templatePath . $template, $data);
