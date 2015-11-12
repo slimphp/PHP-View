@@ -2,7 +2,7 @@
 /**
  * Slim Framework (http://slimframework.com)
  *
- * @link      https://github.com/slimphp/Twig-View
+ * @link      https://github.com/slimphp/PHP-View
  * @copyright Copyright (c) 2011-2015 Josh Lockhart
  * @license   https://github.com/slimphp/PHP-View/blob/master/LICENSE.md (MIT License)
  */
@@ -58,12 +58,17 @@ class PhpRenderer
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
         }
 
-        extract($data);
+        $render = function ($template, $data) {
+            extract($data);
+            include $template;
+        };
 
         ob_start();
-        include $this->templatePath . $template;
-        $output = ob_get_clean();
+        $render($this->templatePath . $template, $data);
+        $output = ob_get_clean(); 
 
-        return $response->getBody()->write($output);
+        $response->getBody()->write($output);
+        
+        return $response;
     }
 }
