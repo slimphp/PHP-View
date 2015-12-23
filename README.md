@@ -2,6 +2,12 @@
 
 This is a renderer for rendering PHP view scripts into a PSR-7 Response object. It works well with Slim Framework 3.
 
+## Installation
+
+Install with [Composer](http://getcomposer.org):
+
+    composer require slim/php-view
+
 ## Usage With Slim 3
 
 ```php
