@@ -68,7 +68,8 @@ class PhpRenderer
         $output = ob_get_clean(); 
 
         $response->getBody()->write($output);
-        
+
         return $response;
     }
 }
+

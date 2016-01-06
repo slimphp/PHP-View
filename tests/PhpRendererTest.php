@@ -12,7 +12,8 @@ use Slim\Http\Response;
 class PhpRendererTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testRenderer() {
+    public function testRenderer()
+    {
         $renderer = new \Slim\Views\PhpRenderer("tests/");
 
         $headers = new Headers();
@@ -26,3 +27,4 @@ class PhpRendererTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("Hi", $newResponse->getBody()->getContents());
     }
 }
+
