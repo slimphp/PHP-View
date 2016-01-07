@@ -23,6 +23,11 @@ class PhpRenderer
     protected $templatePath;
 
     /**
+     * @var string
+     */
+    protected $layout;
+
+    /**
      * SlimRenderer constructor.
      *
      * @param string $templatePath
@@ -30,6 +35,19 @@ class PhpRenderer
     public function __construct($templatePath = "")
     {
         $this->templatePath = $templatePath;
+    }
+
+    /**
+     * Set layout template
+     *
+     * @param string $layout
+     */
+    public function setLayout($layout)
+    {
+        if (!is_file($this->templatePath . $layout)) {
+            throw new \RuntimeException("Layout template `$layout` does not exist");
+        }
+        $this->layout = $layout;
     }
 
     /**
@@ -45,27 +63,29 @@ class PhpRenderer
      *
      * @return ResponseInterface
      *
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function render(ResponseInterface $response, $template, array $data = [])
     {
-        if (isset($data['template'])) {
-            throw new \InvalidArgumentException("Duplicate template key found");
-        }
-
         if (!is_file($this->templatePath . $template)) {
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
         }
 
-        $render = function ($template, $data) {
+        $render = function ($myTemplateVariableTooLongToBeReal, $data) {
             extract($data);
-            include $template;
+            include $myTemplateVariableTooLongToBeReal;
         };
 
         ob_start();
         $render($this->templatePath . $template, $data);
         $output = ob_get_clean(); 
+
+        if ($this->layout) {
+            ob_start();
+            $data['content'] = $output;
+            $render($this->templatePath . $this->layout, $data);
+            $output = ob_get_clean(); 
+        }
 
         $response->getBody()->write($output);
 
