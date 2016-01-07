@@ -25,8 +25,21 @@ class PhpRendererTest extends \PHPUnit_Framework_TestCase
 
         $body = new Body(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
+        $newResponse = $renderer->render($response, "testTemplate", array("hello" => "Hi"));
+        $newResponse->getBody()->rewind();
+        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(200, $headers, $body);
         $renderer->setLayout('testLayout.php');
         $newResponse = $renderer->render($response, "testTemplate.php", array("hello" => "Hi"));
+        $newResponse->getBody()->rewind();
+        $this->assertXmlStringEqualsXmlString("<html><head></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
+
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(200, $headers, $body);
+        $renderer->setLayout('testLayout');
+        $newResponse = $renderer->render($response, "testTemplate", array("hello" => "Hi"));
         $newResponse->getBody()->rewind();
         $this->assertXmlStringEqualsXmlString("<html><head></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
     }

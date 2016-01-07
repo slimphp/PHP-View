@@ -34,6 +34,9 @@ class PhpRenderer
      */
     public function __construct($templatePath = "")
     {
+        if ($templatePath !== '') {
+            $templatePath = rtrim($templatePath, '/') . '/';
+        }
         $this->templatePath = $templatePath;
     }
 
@@ -44,10 +47,14 @@ class PhpRenderer
      */
     public function setLayout($layout)
     {
-        if (!is_file($this->templatePath . $layout)) {
-            throw new \RuntimeException("Layout template `$layout` does not exist");
+        $layoutPath = $this->templatePath . $layout;
+        if (!is_file($layoutPath)) {
+            $layoutPath = $this->templatePath . $layout . '.php';
+            if (!is_file($layoutPath)) {
+                throw new \RuntimeException("Layout template `$layout` does not exist");
+            }
         }
-        $this->layout = $layout;
+        $this->layout = $layoutPath;
     }
 
     /**
@@ -67,8 +74,12 @@ class PhpRenderer
      */
     public function render(ResponseInterface $response, $template, array $data = [])
     {
-        if (!is_file($this->templatePath . $template)) {
-            throw new \RuntimeException("View cannot render `$template` because the template does not exist");
+        $templatePath = $this->templatePath . $template;
+        if (!is_file($templatePath)) {
+            $templatePath = $this->templatePath . $template . '.php';
+            if (!is_file($templatePath)) {
+                throw new \RuntimeException("View cannot render `$template` because the template does not exist");
+            }
         }
 
         $render = function ($myTemplateVariableTooLongToBeReal, $data) {
@@ -77,13 +88,13 @@ class PhpRenderer
         };
 
         ob_start();
-        $render($this->templatePath . $template, $data);
+        $render($templatePath, $data);
         $output = ob_get_clean(); 
 
         if ($this->layout) {
             ob_start();
             $data['content'] = $output;
-            $render($this->templatePath . $this->layout, $data);
+            $render($this->layout, $data);
             $output = ob_get_clean(); 
         }
 
