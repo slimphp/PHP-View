@@ -32,12 +32,16 @@ class PhpRenderer
      *
      * @param string $templatePath
      */
-    public function __construct($templatePath = "")
+    public function __construct($templatePath = '', $layout = '')
     {
         if ($templatePath !== '') {
             $templatePath = rtrim($templatePath, '/') . '/';
         }
         $this->templatePath = $templatePath;
+
+        if ($layout !== '') {
+            $this->setLayout($layout);
+        }
     }
 
     /**
@@ -74,6 +78,10 @@ class PhpRenderer
      */
     public function render(ResponseInterface $response, $template, array $data = [])
     {
+        if (isset($data['template'])) {
+            throw new \InvalidArgumentException("Duplicate template key found");
+        }
+
         $templatePath = $this->templatePath . $template;
         if (!is_file($templatePath)) {
             $templatePath = $this->templatePath . $template . '.php';
@@ -82,9 +90,9 @@ class PhpRenderer
             }
         }
 
-        $render = function ($myTemplateVariableTooLongToBeReal, $data) {
+        $render = function ($template, $data) {
             extract($data);
-            include $myTemplateVariableTooLongToBeReal;
+            include $template;
         };
 
         ob_start();
