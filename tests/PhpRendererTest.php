@@ -12,17 +12,36 @@ use Slim\Http\Response;
 class PhpRendererTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testRenderer() {
+    public function testRenderer()
+    {
         $renderer = new \Slim\Views\PhpRenderer("tests/");
 
         $headers = new Headers();
         $body = new Body(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
-
         $newResponse = $renderer->render($response, "testTemplate.php", array("hello" => "Hi"));
-
         $newResponse->getBody()->rewind();
-
         $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(200, $headers, $body);
+        $newResponse = $renderer->render($response, "testTemplate", array("hello" => "Hi"));
+        $newResponse->getBody()->rewind();
+        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+
+        $renderer = new \Slim\Views\PhpRenderer('tests', 'testLayout.php');
+
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(200, $headers, $body);
+        $newResponse = $renderer->render($response, "testTemplate.php", array("hello" => "Hi"));
+        $newResponse->getBody()->rewind();
+        $this->assertXmlStringEqualsXmlString("<html><head></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
+
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(200, $headers, $body);
+        $newResponse = $renderer->render($response, "testTemplate", array("hello" => "Hi"));
+        $newResponse->getBody()->rewind();
+        $this->assertXmlStringEqualsXmlString("<html><head></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
     }
 }
+

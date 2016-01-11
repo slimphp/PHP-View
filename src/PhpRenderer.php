@@ -23,13 +23,42 @@ class PhpRenderer
     protected $templatePath;
 
     /**
+     * @var string
+     */
+    protected $layout;
+
+    /**
      * SlimRenderer constructor.
      *
      * @param string $templatePath
      */
-    public function __construct($templatePath = "")
+    public function __construct($templatePath = '', $layout = '')
     {
+        if ($templatePath !== '') {
+            $templatePath = rtrim($templatePath, '/') . '/';
+        }
         $this->templatePath = $templatePath;
+
+        if ($layout !== '') {
+            $this->setLayout($layout);
+        }
+    }
+
+    /**
+     * Set layout template
+     *
+     * @param string $layout
+     */
+    public function setLayout($layout)
+    {
+        $layoutPath = $this->templatePath . $layout;
+        if (!is_file($layoutPath)) {
+            $layoutPath = $this->templatePath . $layout . '.php';
+            if (!is_file($layoutPath)) {
+                throw new \RuntimeException("Layout template `$layout` does not exist");
+            }
+        }
+        $this->layout = $layoutPath;
     }
 
     /**
@@ -45,7 +74,6 @@ class PhpRenderer
      *
      * @return ResponseInterface
      *
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
     public function render(ResponseInterface $response, $template, array $data = [])
@@ -54,8 +82,12 @@ class PhpRenderer
             throw new \InvalidArgumentException("Duplicate template key found");
         }
 
-        if (!is_file($this->templatePath . $template)) {
-            throw new \RuntimeException("View cannot render `$template` because the template does not exist");
+        $templatePath = $this->templatePath . $template;
+        if (!is_file($templatePath)) {
+            $templatePath = $this->templatePath . $template . '.php';
+            if (!is_file($templatePath)) {
+                throw new \RuntimeException("View cannot render `$template` because the template does not exist");
+            }
         }
 
         $render = function ($template, $data) {
@@ -64,11 +96,19 @@ class PhpRenderer
         };
 
         ob_start();
-        $render($this->templatePath . $template, $data);
+        $render($templatePath, $data);
         $output = ob_get_clean(); 
 
+        if ($this->layout) {
+            ob_start();
+            $data['content'] = $output;
+            $render($this->layout, $data);
+            $output = ob_get_clean(); 
+        }
+
         $response->getBody()->write($output);
-        
+
         return $response;
     }
 }
+
