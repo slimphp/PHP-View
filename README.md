@@ -2,6 +2,9 @@
 
 This is a renderer for rendering PHP view scripts into a PSR-7 Response object. It works well with Slim Framework 3.
 
+## Templates
+You may use `$this` inside your php templates. `$this` will be the actual PhpRenderer object will allow you to render sub-templates
+
 ## Usage With Slim 3
 
 ```php
