@@ -6,3 +6,5 @@
  * Time: 1:20 PM
  */
 print $hello;
+render("testrender.php");
+?>

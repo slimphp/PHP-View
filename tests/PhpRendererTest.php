@@ -19,10 +19,10 @@ class PhpRendererTest extends \PHPUnit_Framework_TestCase
         $body = new Body(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $newResponse = $renderer->render($response, "testTemplate.php", array("hello" => "Hi"));
+        $newResponse = $renderer->render($response, "testTemplate.php", array("hello" => "Hello ", "world" => "World"));
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+        $this->assertEquals("Hello World", $newResponse->getBody()->getContents());
     }
 }
