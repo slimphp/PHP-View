@@ -39,3 +39,21 @@ $response = $phpView->render(new Response(), "/path/to/template.php", $yourData)
 `\RuntimeException` - if template does not exist
 
 `\InvalidArgumentException` - if $data contains 'template'
+
+## Template Syntax
+
+You may use most normal PHP syntax, with one added function: `$render($template, $data)`.
+Where `$template` is a string for the template name(with file extension), and $data is an optional array of data to pass to the template.
+The `$render()` function renders an additional template.
+Note that the `$` is necessary.
+Example **In Template**
+```php
+echo "Hello ";
+$render("world.php", ["myvar"=>"world"]);
+```
+**In world.php**
+```php
+echo $myvar;
+```
+**Output**
+`Hello world`
