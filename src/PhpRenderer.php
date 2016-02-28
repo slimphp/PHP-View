@@ -49,13 +49,15 @@ class PhpRenderer
      * @throws \RuntimeException
      */
     public function generate_render_func(){
-        path = $this->templatePath;
-        return function($template) use ($path) {
+        $path = $this->templatePath;
+        $func = function($template, array $data = []) use ($path) {
             if (!is_file($path . $template)) {
                 throw new \RuntimeException("View cannot render `$template` because the template does not exist");
             }
+            extract($data);
             include $path . $template;
-        }
+        };
+        return $func;
     }
     public function render(ResponseInterface $response, $template, array $data = [])
     {
@@ -66,7 +68,7 @@ class PhpRenderer
         if (!is_file($this->templatePath . $template)) {
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
         }
-        $data["render"=>$this->generate_render_func()];
+        $data["render"] = $this->generate_render_func();
 
         $render = function ($template, $data) {
             extract($data);
@@ -75,10 +77,10 @@ class PhpRenderer
 
         ob_start();
         $render($this->templatePath . $template, $data);
-        $output = ob_get_clean(); 
+        $output = ob_get_clean();
 
         $response->getBody()->write($output);
-        
+
         return $response;
     }
 }
