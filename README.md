@@ -2,16 +2,16 @@
 
 This is a renderer for rendering PHP view scripts into a PSR-7 Response object. It works well with Slim Framework 3.
 
-<<<<<<< HEAD
+
 ## Templates
 You may use `$this` inside your php templates. `$this` will be the actual PhpRenderer object will allow you to render sub-templates
-=======
+
 ## Installation
 
 Install with [Composer](http://getcomposer.org):
 
     composer require slim/php-view
->>>>>>> f5134be6ea4dac95e14439ce203927d57760ccf4
+
 
 ## Usage With Slim 3
 
