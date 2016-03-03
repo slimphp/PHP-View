@@ -25,11 +25,13 @@ $container = $app->getContainer();
 $container['renderer'] = new PhpRenderer("./templates");
 
 $app->get('/hello/{name}', function ($request, $response, $args) {
-    return $this->renderer->render($response, "/hello.php", $args);
+    return $this->renderer->render($response, "/hello", $args);
 });
 
 $app->run();
 ```
+
+The view file name extension can be ommitted when it's _.php_.
 
 ## Usage with any PSR-7 Project
 ```php
@@ -39,6 +41,24 @@ $phpView = new PhpRenderer("./path/to/templates");
 //Render a Template
 $response = $phpView->render(new Response(), "/path/to/template.php", $yourData);
 ```
+
+## Using layouts
+
+A layout file can be specified in the constructor so that views are rendered inside it
+
+```php
+$container['renderer'] = new PhpRenderer("./templates", "my_layout");
+```
+
+Layouts are located in the same path as templates.
+
+The layout can be changed any time with:
+
+```php
+$container['renderer']->setLayout('other_layout');
+```
+
+Or set it to _null_ to stop using a layout.
 
 ## Exceptions
 `\RuntimeException` - if template does not exist
