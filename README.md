@@ -40,6 +40,39 @@ $phpView = new PhpRenderer("./path/to/templates");
 $response = $phpView->render(new Response(), "/path/to/template.php", $yourData);
 ```
 
+## Template Variables
+
+You can now add variables to your renderer that will be available to all templates you render.
+
+```php
+//Via the constructor
+$templateVariables = [
+    "title" => "Title"
+];
+$phpView = new PhpRenderer("./path/to/templates", $templateVariables);
+
+//Or Setter
+$phpView->setAttributes($templateVariables);
+
+//Or Individually
+$phpView->addAttribute($key, $value);
+```
+
+Data passed in via `->render()` takes precedence over attributes.
+```php
+$templateVariables = [
+    "title" => "Title"
+];
+$phpView = new PhpRenderer("./path/to/templates", $templateVariables);
+
+//...
+
+$phpView->render($response, $template, [
+    "title" => "My Title"
+]);
+// In the view above, the $title will be "My Title" and not "Title"
+```
+
 ## Exceptions
 `\RuntimeException` - if template does not exist
 

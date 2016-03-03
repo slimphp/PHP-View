@@ -87,6 +87,30 @@ class PhpRenderer
     }
 
     /**
+     * Add an attribute
+     *
+     * @param $key
+     * @param $value
+     */
+    public function addAttribute($key, $value) {
+        $this->attributes[$key] = $value;
+    }
+
+    /**
+     * Retrieve an attribute
+     *
+     * @param $key
+     * @return mixed
+     */
+    public function getAttribute($key) {
+        if (!isset($this->attributes[$key])) {
+            return false;
+        }
+
+        return $this->attributes[$key];
+    }
+
+    /**
      * Get the template path
      *
      * @return string
@@ -130,11 +154,15 @@ class PhpRenderer
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
         }
 
+
+        /*
         foreach ($data as $k=>$val) {
             if (in_array($k, array_keys($this->attributes))) {
                 throw new \InvalidArgumentException("Duplicate key found in data and renderer attributes. " . $k);
             }
         }
+        */
+        $data = array_merge($this->attributes, $data);
 
         ob_start();
         $this->protectedIncludeScope($this->templatePath . $template, $data);

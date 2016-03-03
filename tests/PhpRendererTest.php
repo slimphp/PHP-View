@@ -26,22 +26,21 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("Hi", $newResponse->getBody()->getContents());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testExceptionForAttr() {
+    public function testAttributeMerging() {
 
         $renderer = new \Slim\Views\PhpRenderer("tests/", [
-            "hello" => "Hi"
+            "hello" => "Hello"
         ]);
 
         $headers = new Headers();
         $body = new Body(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $renderer->render($response, "testTemplate.php", [
+        $newResponse = $renderer->render($response, "testTemplate.php", [
             "hello" => "Hi"
         ]);
+        $newResponse->getBody()->rewind();
+        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
     }
 
     /**
