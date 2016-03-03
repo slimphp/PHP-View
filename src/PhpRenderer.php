@@ -8,6 +8,7 @@
  */
 namespace Slim\Views;
 
+use \InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -24,13 +25,20 @@ class PhpRenderer
     protected $templatePath;
 
     /**
+     * @var array
+     */
+    protected $attributes;
+
+    /**
      * SlimRenderer constructor.
      *
      * @param string $templatePath
+     * @param array $attributes
      */
-    public function __construct($templatePath = "")
+    public function __construct($templatePath = "", $attributes = [])
     {
         $this->templatePath = $templatePath;
+        $this->attributes = $attributes;
     }
 
     /**
@@ -59,6 +67,46 @@ class PhpRenderer
     }
 
     /**
+     * Get the attributes for the renderer
+     *
+     * @return array
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * Set the attributes for the renderer
+     *
+     * @param array $attributes
+     */
+    public function setAttributes(array $attributes)
+    {
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * Get the template path
+     *
+     * @return string
+     */
+    public function getTemplatePath()
+    {
+        return $this->templatePath;
+    }
+
+    /**
+     * Set the template path
+     *
+     * @param string $templatePath
+     */
+    public function setTemplatePath($templatePath)
+    {
+        $this->templatePath = $templatePath;
+    }
+
+    /**
      * Renders a template and returns the result as a string
      *
      * cannot contain template as a key
@@ -80,6 +128,12 @@ class PhpRenderer
 
         if (!is_file($this->templatePath . $template)) {
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
+        }
+
+        foreach ($data as $k=>$val) {
+            if (in_array($k, array_keys($this->attributes))) {
+                throw new \InvalidArgumentException("Duplicate key found in data and renderer attributes. " . $k);
+            }
         }
 
         ob_start();
