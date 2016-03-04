@@ -45,16 +45,16 @@ $response = $phpView->render(new Response(), "/path/to/template.php", $yourData)
 You can now add variables to your renderer that will be available to all templates you render.
 
 ```php
-//Via the constructor
+// via the constructor
 $templateVariables = [
     "title" => "Title"
 ];
 $phpView = new PhpRenderer("./path/to/templates", $templateVariables);
 
-//Or Setter
+// or setter
 $phpView->setAttributes($templateVariables);
 
-//Or Individually
+// or individually
 $phpView->addAttribute($key, $value);
 ```
 
