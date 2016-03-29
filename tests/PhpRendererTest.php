@@ -26,6 +26,20 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("Hi", $newResponse->getBody()->getContents());
     }
 
+    public function testRenderConstructor() {
+        $renderer = new \Slim\Views\PhpRenderer("tests");
+
+        $headers = new Headers();
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(200, $headers, $body);
+
+        $newResponse = $renderer->render($response, "testTemplate.php", array("hello" => "Hi"));
+
+        $newResponse->getBody()->rewind();
+
+        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+    }
+
     public function testAttributeMerging() {
 
         $renderer = new \Slim\Views\PhpRenderer("tests/", [
