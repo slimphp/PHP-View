@@ -3,6 +3,12 @@
 This is a renderer for rendering PHP view scripts into a PSR-7 Response object. It works well with Slim Framework 3.
 
 
+### Cross-site scripting (XSS) risks
+
+Note that PHP-View has no built-in mitigation from XSS attacks. It is the developer's responsibility to use `htmlspecialchars()` or a component like [zend-escaper](https://github.com/zendframework/zend-escaper). Alternatively, consider  [Twig-View](https://github.com/slimphp/Twig-View).
+
+
+
 ## Templates
 You may use `$this` inside your php templates. `$this` will be the actual PhpRenderer object will allow you to render sub-templates
 
@@ -13,7 +19,7 @@ Install with [Composer](http://getcomposer.org):
     composer require slim/php-view
 
 
-## Usage With Slim 3
+## Usage with Slim 3
 
 ```php
 use Slim\Views\PhpRenderer;
@@ -45,16 +51,16 @@ $response = $phpView->render(new Response(), "/path/to/template.php", $yourData)
 You can now add variables to your renderer that will be available to all templates you render.
 
 ```php
-//Via the constructor
+// via the constructor
 $templateVariables = [
     "title" => "Title"
 ];
 $phpView = new PhpRenderer("./path/to/templates", $templateVariables);
 
-//Or Setter
+// or setter
 $phpView->setAttributes($templateVariables);
 
-//Or Individually
+// or individually
 $phpView->addAttribute($key, $value);
 ```
 
