@@ -43,6 +43,32 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("Hi", $newResponse->getBody()->getContents());
     }
 
+    public function testExceptionInTemplate() {
+        $renderer = new \Slim\Views\PhpRenderer("tests/");
+
+        $headers = new Headers();
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(200, $headers, $body);
+
+        try {
+            $newResponse = $renderer->render($response, "testException.php");
+        } catch (Throwable $t) { // PHP 7+
+            // Simulates an error template
+            $newResponse = $renderer->render($response, "testTemplate.php", [
+                "hello" => "Hi"
+            ]);
+        } catch (Exception $e) { // PHP < 7
+            // Simulates an error template
+            $newResponse = $renderer->render($response, "testTemplate.php", [
+                "hello" => "Hi"
+            ]);
+        }
+
+        $newResponse->getBody()->rewind();
+
+        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+    }
+
     /**
      * @expectedException InvalidArgumentException
      */
