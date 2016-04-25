@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/geggleto/PHP-View.svg?branch=master)](https://travis-ci.org/geggleto/PHP-View)
+
 ## PHP Renderer
 
 This is a renderer for rendering PHP view scripts into a PSR-7 Response object. It works well with Slim Framework 3.
