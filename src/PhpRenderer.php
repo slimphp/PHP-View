@@ -37,6 +37,10 @@ class PhpRenderer
      */
     public function __construct($templatePath = "", $attributes = [])
     {
+        $chr = substr($templatePath,-1);
+        if ($chr !== '/') {
+            $templatePath .= '/';
+        }
         $this->templatePath = $templatePath;
         $this->attributes = $attributes;
     }
