@@ -185,6 +185,6 @@ class PhpRenderer
      */
     protected function protectedIncludeScope ($template, array $data) {
         extract($data);
-        include $template;
+        include func_get_arg(0);
     }
 }
