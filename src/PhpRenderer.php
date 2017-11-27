@@ -25,6 +25,16 @@ class PhpRenderer
     protected $templatePath;
 
     /**
+     * @var string
+     */
+    protected $layoutPath;
+
+    /**
+     * @var string
+     */
+    protected $defaultLayout = 'default.phtml';
+
+    /**
      * @var array
      */
     protected $attributes;
@@ -33,11 +43,13 @@ class PhpRenderer
      * SlimRenderer constructor.
      *
      * @param string $templatePath
+     * @param $layoutPath
      * @param array $attributes
      */
-    public function __construct($templatePath = "", $attributes = [])
+    public function __construct($templatePath = "", $layoutPath, $attributes = [])
     {
         $this->templatePath = rtrim($templatePath, '/\\') . '/';
+        $this->layoutPath = rtrim($layoutPath, '/\\') .'/';
         $this->attributes = $attributes;
     }
 
@@ -121,6 +133,16 @@ class PhpRenderer
     }
 
     /**
+     * Get the layout path
+     *
+     * @return string
+     */
+    public function getLayoutPath()
+    {
+        return $this->layoutPath;
+    }
+
+    /**
      * Set the template path
      *
      * @param string $templatePath
@@ -131,6 +153,16 @@ class PhpRenderer
     }
 
     /**
+     * Set layout path
+     *
+     * @param $layoutPath
+     */
+    public function setLayoutPath($layoutPath)
+    {
+        $this->layoutPath = rtrim($layoutPath, '/\\') . '/';
+    }
+
+    /**
      * Renders a template and returns the result as a string
      *
      * cannot contain template as a key
@@ -138,20 +170,23 @@ class PhpRenderer
      * throws RuntimeException if $templatePath . $template does not exist
      *
      * @param $template
+     * @param null $layout
      * @param array $data
-     *
      * @return mixed
-     *
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws \Exception
+     * @throws \Throwable
      */
-    public function fetch($template, array $data = []) {
+    public function fetch($template, $layout = null, array $data = []) {
         if (isset($data['template'])) {
             throw new \InvalidArgumentException("Duplicate template key found");
         }
 
         if (!is_file($this->templatePath . $template)) {
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
+        }
+
+        if($layout == null) {
+            $layout = $this->defaultLayout;
         }
 
 
@@ -167,6 +202,10 @@ class PhpRenderer
         try {
             ob_start();
             $this->protectedIncludeScope($this->templatePath . $template, $data);
+            $content = ob_get_contents();
+            $data = array_merge(['content'=> $content], $this->attributes);
+
+            $this->protectedIncludeScope( $this->layoutPath . $layout, $data);
             $output = ob_get_clean();
         } catch(\Throwable $e) { // PHP 7+
             ob_end_clean();
@@ -178,6 +217,7 @@ class PhpRenderer
 
         return $output;
     }
+
 
     /**
      * @param string $template
