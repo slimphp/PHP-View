@@ -1,0 +1,1 @@
+<layout><?php print $content; ?></layout>

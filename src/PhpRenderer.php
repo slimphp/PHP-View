@@ -30,11 +30,6 @@ class PhpRenderer
     protected $layoutPath;
 
     /**
-     * @var string
-     */
-    protected $defaultLayout = 'default.phtml';
-
-    /**
      * @var array
      */
     protected $attributes;
@@ -61,17 +56,14 @@ class PhpRenderer
      * throws RuntimeException if $templatePath . $template does not exist
      *
      * @param ResponseInterface $response
-     * @param string             $template
-     * @param array              $data
-     *
+     * @param string $template
+     * @param null/string $layout
+     * @param array $data
      * @return ResponseInterface
-     *
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      */
-    public function render(ResponseInterface $response, $template, array $data = [])
+    public function render(ResponseInterface $response, $template, $layout = null, array $data = [])
     {
-        $output = $this->fetch($template, $data);
+        $output = $this->fetch($template, $layout, $data);
 
         $response->getBody()->write($output);
 
@@ -163,7 +155,7 @@ class PhpRenderer
     }
 
     /**
-     * Renders a template and returns the result as a string
+     * Renders a template inside layout and returns the result as a string
      *
      * cannot contain template as a key
      *
@@ -176,7 +168,7 @@ class PhpRenderer
      * @throws \Exception
      * @throws \Throwable
      */
-    public function fetch($template, $layout = null, array $data = []) {
+    public function fetch($template, $layout = false, array $data = []) {
         if (isset($data['template'])) {
             throw new \InvalidArgumentException("Duplicate template key found");
         }
@@ -185,9 +177,10 @@ class PhpRenderer
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
         }
 
-        if($layout == null) {
-            $layout = $this->defaultLayout;
+        if ($layout !== false && !is_file($this->layoutPath . $layout)) {
+            throw new \RuntimeException("View cannot render `$layout` because the layout does not exist");
         }
+
 
 
         /*
@@ -202,11 +195,15 @@ class PhpRenderer
         try {
             ob_start();
             $this->protectedIncludeScope($this->templatePath . $template, $data);
-            $content = ob_get_contents();
-            $data = array_merge(['content'=> $content], $this->attributes);
+            $output = ob_get_contents();
 
-            $this->protectedIncludeScope( $this->layoutPath . $layout, $data);
-            $output = ob_get_clean();
+            if($layout !== false) {
+                $data = array_merge(['content' => $output], $this->attributes);
+
+                $this->protectedIncludeScope($this->layoutPath . $layout, $data);
+                $output = ob_get_clean();
+            }
+            ob_get_clean();
         } catch(\Throwable $e) { // PHP 7+
             ob_end_clean();
             throw $e;
