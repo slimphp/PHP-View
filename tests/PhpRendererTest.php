@@ -163,7 +163,7 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
      */
     public function testTemplateNotFound() {
 
-        $renderer = new \Slim\Views\PhpRenderer("tests/");
+        $renderer = new \Slim\Views\PhpRenderer("tests/", "tests/");
 
         $headers = new Headers();
         $body = new Body(fopen('php://temp', 'r+'));
