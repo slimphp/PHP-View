@@ -30,10 +30,10 @@ include "vendor/autoload.php";
 
 $app = new Slim\App();
 $container = $app->getContainer();
-$container['renderer'] = new PhpRenderer("./templates");
+$container['renderer'] = new PhpRenderer("./templates" ./path/to/layouts');
 
 $app->get('/hello/{name}', function ($request, $response, $args) {
-    return $this->renderer->render($response, "/hello.php", $args);
+    return $this->renderer->render($response, "/hello.php", false, $args);
 });
 
 $app->run();
@@ -42,10 +42,10 @@ $app->run();
 ## Usage with any PSR-7 Project
 ```php
 //Construct the View
-$phpView = new PhpRenderer("./path/to/templates");
+$phpView = new PhpRenderer("./path/to/templates" ./path/to/layouts');
 
 //Render a Template
-$response = $phpView->render(new Response(), "/path/to/template.php", $yourData);
+$response = $phpView->render(new Response(), false, $yourData);
 ```
 
 ## Template Variables
@@ -57,7 +57,7 @@ You can now add variables to your renderer that will be available to all templat
 $templateVariables = [
     "title" => "Title"
 ];
-$phpView = new PhpRenderer("./path/to/templates", $templateVariables);
+$phpView = new PhpRenderer("./path/to/templates", ./path/to/layouts', $templateVariables);
 
 // or setter
 $phpView->setAttributes($templateVariables);
@@ -71,16 +71,45 @@ Data passed in via `->render()` takes precedence over attributes.
 $templateVariables = [
     "title" => "Title"
 ];
-$phpView = new PhpRenderer("./path/to/templates", $templateVariables);
+$phpView = new PhpRenderer("./path/to/templates", './path/to/layouts', '$templateVariables);
 
 //...
 
-$phpView->render($response, $template, [
+$phpView->render($response, $template, false, [
     "title" => "My Title"
 ]);
 // In the view above, the $title will be "My Title" and not "Title"
 ```
 
+## Rendering in Layouts
+You can now render view in another views called layouts, this allows you to compose modular view templates
+and help keep your views DRY.
+```php
+// via the constructor
+$templateVariables = [
+    "title" => "Title"
+];
+
+//create your layout ./path/to/layouts/default.phtml
+   <body> <?php print $content ?></body>
+
+$phpView = new PhpRenderer("./path/to/templates", './path/to/layouts', $templateVariables);
+$phpview->render($response, $template, $layout, ['data' => 'value']);
+
+// $response will now contain "<body>value</body>" the rendered view template inside layout
+```
+Please note, the $content is special variable use inside layouts to render the wrapped view and should not be set
+in your view paramaters.
+
+## Disabling Layouts
+If you don't want to make use of layouts, you can opt by simply passing false to `render` method.
+```php
+$templateVariables = ['title' => 'Title'];
+
+ $phpView = new PhpRenderer("./path/to/templates", ./path/to/layouts', $templateVariables);
+ 
+ $phpview->render($response, './templates', false, ['more' => 'data'];
+ // renders view without layout
 ## Exceptions
 `\RuntimeException` - if template does not exist
 
