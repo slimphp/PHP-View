@@ -195,15 +195,15 @@ class PhpRenderer
         try {
             ob_start();
             $this->protectedIncludeScope($this->templatePath . $template, $data);
-            $output = ob_get_contents();
+            $output = ob_get_clean();
 
             if($layout !== false) {
+                ob_start();
                 $data = array_merge(['content' => $output], $this->attributes);
 
                 $this->protectedIncludeScope($this->layoutPath . $layout, $data);
                 $output = ob_get_clean();
             }
-            ob_get_clean();
         } catch(\Throwable $e) { // PHP 7+
             ob_end_clean();
             throw $e;
