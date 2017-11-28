@@ -91,18 +91,17 @@ $templateVariables = [
 ];
 
 //create your layout ./path/to/layouts/default.phtml
-   <body> <?php print $content ?></body>
-
+   //<body> <?php print $content ?></body>
+   
 $phpView = new PhpRenderer("./path/to/templates", './path/to/layouts', $templateVariables);
 $phpview->render($response, $template, $layout, ['data' => 'value']);
-
 // $response will now contain "<body>value</body>" the rendered view template inside layout
 ```
 Please note, the $content is special variable used inside layouts to render the wrapped view and should not be set
 in your view paramaters.
 
 ## Disabling Layouts
-If you don't want to make use of layouts, you can opt out by simply passing false to `render` method.
+If you don't want to make use of layouts, you can opt out by simply passing false as third argument to `render` method.
 ```php
 $templateVariables = ['title' => 'Title'];
 
