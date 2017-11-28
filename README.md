@@ -98,11 +98,11 @@ $phpview->render($response, $template, $layout, ['data' => 'value']);
 
 // $response will now contain "<body>value</body>" the rendered view template inside layout
 ```
-Please note, the $content is special variable use inside layouts to render the wrapped view and should not be set
+Please note, the $content is special variable used inside layouts to render the wrapped view and should not be set
 in your view paramaters.
 
 ## Disabling Layouts
-If you don't want to make use of layouts, you can opt by simply passing false to `render` method.
+If you don't want to make use of layouts, you can opt out by simply passing false to `render` method.
 ```php
 $templateVariables = ['title' => 'Title'];
 
@@ -110,6 +110,7 @@ $templateVariables = ['title' => 'Title'];
  
  $phpview->render($response, './templates', false, ['more' => 'data'];
  // renders view without layout
+ ```
 ## Exceptions
 `\RuntimeException` - if template does not exist
 
