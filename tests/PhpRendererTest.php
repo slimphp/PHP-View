@@ -129,9 +129,7 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
         ]);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
+    
     public function testExceptionInlayout() {
         $renderer = new \Slim\Views\PhpRenderer("tests/","tests/");
 
