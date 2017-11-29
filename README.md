@@ -10,10 +10,6 @@ This is a renderer for rendering PHP view scripts into a PSR-7 Response object. 
 Note that PHP-View has no built-in mitigation from XSS attacks. It is the developer's responsibility to use `htmlspecialchars()` or a component like [zend-escaper](https://github.com/zendframework/zend-escaper). Alternatively, consider  [Twig-View](https://github.com/slimphp/Twig-View).
 
 
-
-## Templates
-You may use `$this` inside your php templates. `$this` will be the actual PhpRenderer object will allow you to render sub-templates
-
 ## Installation
 
 Install with [Composer](http://getcomposer.org):
@@ -80,6 +76,10 @@ $phpView->render($response, $template, [
 ]);
 // In the view above, the $title will be "My Title" and not "Title"
 ```
+
+## Sub-templates
+Inside your templates you may use `$this` to refer to the PhpRenderer object to render sub-templates.
+
 
 ## Exceptions
 `\RuntimeException` - if template does not exist
