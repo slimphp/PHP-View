@@ -30,15 +30,22 @@ class PhpRenderer
     protected $attributes;
 
     /**
+     * @var string
+     */
+    protected $layout;
+
+    /**
      * SlimRenderer constructor.
      *
      * @param string $templatePath
      * @param array $attributes
+     * @param string $layout
      */
-    public function __construct($templatePath = "", $attributes = [])
+    public function __construct($templatePath = "", $attributes = [], $layout = "")
     {
         $this->templatePath = rtrim($templatePath, '/\\') . '/';
         $this->attributes = $attributes;
+        $this->setLayout($layout);
     }
 
     /**
@@ -64,6 +71,34 @@ class PhpRenderer
         $response->getBody()->write($output);
 
         return $response;
+    }
+
+    /**
+     * Get layout template
+     *
+     * @return string
+     */
+    public function getLayout()
+    {
+        return $this->layout;
+    }
+
+    /**
+     * Set layout template
+     *
+     * @param string $layout
+     */
+    public function setLayout($layout)
+    {
+        if ($layout === "" || $layout === null) {
+            $this->layout = null;
+        } else {
+            $layoutPath = $this->templatePath . $layout;
+            if (!is_file($layoutPath)) {
+                throw new \RuntimeException("Layout template `$layout` does not exist");
+            }
+            $this->layout = $layoutPath;
+        }
     }
 
     /**
@@ -168,6 +203,13 @@ class PhpRenderer
             ob_start();
             $this->protectedIncludeScope($this->templatePath . $template, $data);
             $output = ob_get_clean();
+
+            if ($this->layout !== null) {
+                ob_start();
+                $data['content'] = $output;
+                $this->protectedIncludeScope($this->layout, $data);
+                $output = ob_get_clean(); 
+            }
         } catch(\Throwable $e) { // PHP 7+
             ob_end_clean();
             throw $e;
