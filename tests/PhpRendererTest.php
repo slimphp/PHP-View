@@ -114,32 +114,32 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
     }
 
     public function testLayout() {
-        $renderer = new \Slim\Views\PhpRenderer("tests/");
+        $renderer = new \Slim\Views\PhpRenderer("tests/", ["title" => "My App"]);
         $renderer->setLayout("testLayout.php");
 
         $headers = new Headers();
         $body = new Body(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $newResponse = $renderer->render($response, "testTemplate.php", array("hello" => "Hi"));
+        $newResponse = $renderer->render($response, "testTemplate.php", array("title" => "Hello - My App", "hello" => "Hi"));
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("<layout>Hi</layout>", $newResponse->getBody()->getContents());
+        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
     }
 
     public function testLayoutConstructor() {
-        $renderer = new \Slim\Views\PhpRenderer("tests", [], "testLayout.php");
+        $renderer = new \Slim\Views\PhpRenderer("tests", ["title" => "My App"], "testLayout.php");
 
         $headers = new Headers();
         $body = new Body(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $newResponse = $renderer->render($response, "testTemplate.php", array("hello" => "Hi"));
+        $newResponse = $renderer->render($response, "testTemplate.php", array("title" => "Hello - My App", "hello" => "Hi"));
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("<layout>Hi</layout>", $newResponse->getBody()->getContents());
+        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
     }
 
     public function testExceptionInLayout() {
@@ -194,10 +194,10 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
         $body = new Body(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $newResponse = $renderer->render($response, "testTemplate.php", array("hello" => "Hi", "content" => "Ho"));
+        $newResponse = $renderer->render($response, "testTemplate.php", array("title" => "Hello - My App", "hello" => "Hi", "content" => "Ho"));
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("<layout>Hi</layout>", $newResponse->getBody()->getContents());
+        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
     }
 }

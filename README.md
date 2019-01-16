@@ -33,7 +33,7 @@ $container = $app->getContainer();
 $container['renderer'] = new PhpRenderer("./templates");
 
 $app->get('/hello/{name}', function ($request, $response, $args) {
-    return $this->renderer->render($response, "/hello.php", $args);
+    return $this->renderer->render($response, "hello.php", $args);
 });
 
 $app->run();
@@ -45,7 +45,7 @@ $app->run();
 $phpView = new PhpRenderer("./path/to/templates");
 
 //Render a Template
-$response = $phpView->render(new Response(), "/path/to/template.php", $yourData);
+$response = $phpView->render(new Response(), "hello.php", $yourData);
 ```
 
 ## Template Variables
@@ -80,6 +80,38 @@ $phpView->render($response, $template, [
 ]);
 // In the view above, the $title will be "My Title" and not "Title"
 ```
+
+## Rendering in Layouts
+You can now render view in another views called layouts, this allows you to compose modular view templates
+and help keep your views DRY.
+
+Create your layout `./path/to/templates/layout.php`.
+```phtml
+<html><head><title><?=$title?></title></head><body><?=$content?></body></html>
+```
+
+Create your view template `./path/to/templates/hello.php`.
+```phtml
+Hello <?=$name?>!
+```
+
+Rendering in your code.
+```php
+$phpView = new PhpRenderer("./path/to/templates", ["title" => "My App"]);
+$phpView->setLayout("layout.php");
+
+//...
+
+$phpview->render($response, "hello.php", ["title" => "Hello - My App", "name" => "John"]);
+```
+
+Response will be
+```html
+<html><head><title>Hello - My App</title></head><body>Hello John!</body></html>
+```
+
+Please note, the $content is special variable used inside layouts to render the wrapped view and should not be set
+in your view paramaters.
 
 ## Exceptions
 `\RuntimeException` - if template does not exist
