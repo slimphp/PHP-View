@@ -223,6 +223,56 @@ class PhpRenderer
     }
 
     /**
+     * Renders a template without a layout and returns the result as a string
+     *
+     * cannot contain template as a key
+     *
+     * throws RuntimeException if $templatePath . $template does not exist
+     *
+     * @param $template
+     * @param array $data
+     *
+     * @return mixed
+     *
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     */
+    public function fetchPartial($template, array $data = []) {
+        if (isset($data['template'])) {
+            throw new \InvalidArgumentException("Duplicate template key found");
+        }
+
+        if (!is_file($this->templatePath . $template)) {
+            throw new \RuntimeException("View cannot render `$template` because the template does not exist");
+        }
+
+
+        /*
+        foreach ($data as $k=>$val) {
+            if (in_array($k, array_keys($this->attributes))) {
+                throw new \InvalidArgumentException("Duplicate key found in data and renderer attributes. " . $k);
+            }
+        }
+        */
+        $data = array_merge($this->attributes, $data);
+
+        try {
+            ob_start();
+            $this->protectedIncludeScope($this->templatePath . $template, $data);
+            $output = ob_get_clean();
+
+        } catch(\Throwable $e) { // PHP 7+
+            ob_end_clean();
+            throw $e;
+        } catch(\Exception $e) { // PHP < 7
+            ob_end_clean();
+            throw $e;
+        }
+
+        return $output;
+    }
+
+    /**
      * @param string $template
      * @param array $data
      */
