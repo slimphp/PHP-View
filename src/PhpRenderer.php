@@ -190,14 +190,6 @@ class PhpRenderer
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
         }
 
-
-        /*
-        foreach ($data as $k=>$val) {
-            if (in_array($k, array_keys($this->attributes))) {
-                throw new \InvalidArgumentException("Duplicate key found in data and renderer attributes. " . $k);
-            }
-        }
-        */
         $data = array_merge($this->attributes, $data);
 
         try {
@@ -246,14 +238,6 @@ class PhpRenderer
             throw new \RuntimeException("View cannot render `$template` because the template does not exist");
         }
 
-
-        /*
-        foreach ($data as $k=>$val) {
-            if (in_array($k, array_keys($this->attributes))) {
-                throw new \InvalidArgumentException("Duplicate key found in data and renderer attributes. " . $k);
-            }
-        }
-        */
         $data = array_merge($this->attributes, $data);
 
         try {
