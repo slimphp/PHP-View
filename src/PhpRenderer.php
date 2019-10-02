@@ -66,7 +66,7 @@ class PhpRenderer
      */
     public function render(ResponseInterface $response, $template, array $data = [])
     {
-        $output = $this->fetch($template, $data);
+        $output = $this->fetch($template, $data, true);
 
         $response->getBody()->write($output);
 
@@ -174,13 +174,14 @@ class PhpRenderer
      *
      * @param $template
      * @param array $data
+     * @param bool $useLayout
      *
      * @return mixed
      *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function fetch($template, array $data = []) {
+    public function fetch($template, array $data = [], $useLayout = false) {
         if (isset($data['template'])) {
             throw new \InvalidArgumentException("Duplicate template key found");
         }
@@ -204,7 +205,7 @@ class PhpRenderer
             $this->protectedIncludeScope($this->templatePath . $template, $data);
             $output = ob_get_clean();
 
-            if ($this->layout !== null) {
+            if ($this->layout !== null && $useLayout) {
                 ob_start();
                 $data['content'] = $output;
                 $this->protectedIncludeScope($this->layout, $data);
