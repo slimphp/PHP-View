@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Slim\ViewsTest;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Response;
 use Slim\Psr7\Stream;
@@ -78,12 +80,7 @@ class PhpRendererTest extends TestCase
 
         try {
             $newResponse = $renderer->render($response, "exception_layout.phtml");
-        } catch (Throwable $t) { // PHP 7+
-            // Simulates an error template
-            $newResponse = $renderer->render($response, "template.phtml", [
-                "hello" => "Hi"
-            ]);
-        } catch (Exception $e) { // PHP < 7
+        } catch (Throwable $t) {
             // Simulates an error template
             $newResponse = $renderer->render($response, "template.phtml", [
                 "hello" => "Hi"
@@ -173,12 +170,6 @@ class PhpRendererTest extends TestCase
         } catch (Throwable $t) { // PHP 7+
             // Simulates an error template
             $renderer->setLayout('');
-            $newResponse = $renderer->render($response, "template.phtml", [
-                "hello" => "Hi"
-            ]);
-        } catch (Exception $e) { // PHP < 7
-            // Simulates an error template
-            $renderer->setLayout(null);
             $newResponse = $renderer->render($response, "template.phtml", [
                 "hello" => "Hi"
             ]);
