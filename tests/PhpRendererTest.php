@@ -15,8 +15,7 @@ use Throwable;
 
 class PhpRendererTest extends TestCase
 {
-
-    public function testRenderer()
+    public function testRenderer(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files/');
 
@@ -31,7 +30,7 @@ class PhpRendererTest extends TestCase
         $this->assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
-    public function testRenderConstructor()
+    public function testRenderConstructor(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files');
 
@@ -46,7 +45,7 @@ class PhpRendererTest extends TestCase
         $this->assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
-    public function testAttributeMerging()
+    public function testAttributeMerging(): void
     {
 
         $renderer = new PhpRenderer(__DIR__ . '/_files/', [
@@ -64,7 +63,7 @@ class PhpRendererTest extends TestCase
         $this->assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
-    public function testExceptionInTemplate()
+    public function testExceptionInTemplate(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files/');
 
@@ -86,7 +85,7 @@ class PhpRendererTest extends TestCase
         $this->assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
-    public function testExceptionForTemplateInData()
+    public function testExceptionForTemplateInData(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files/');
 
@@ -100,7 +99,7 @@ class PhpRendererTest extends TestCase
         ]);
     }
 
-    public function testTemplateNotFound()
+    public function testTemplateNotFound(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files/');
 
@@ -112,7 +111,7 @@ class PhpRendererTest extends TestCase
         $renderer->render($response, 'adfadftemplate.phtml', []);
     }
 
-    public function testLayout()
+    public function testLayout(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files/', ['title' => 'My App']);
         $renderer->setLayout('layout.phtml');
@@ -129,7 +128,7 @@ class PhpRendererTest extends TestCase
                             . '</footer></body></html>', $newResponse->getBody()->getContents());
     }
 
-    public function testLayoutConstructor()
+    public function testLayoutConstructor(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files', ['title' => 'My App'], 'layout.phtml');
 
@@ -145,7 +144,7 @@ class PhpRendererTest extends TestCase
                             . '</footer></body></html>', $newResponse->getBody()->getContents());
     }
 
-    public function testExceptionInLayout()
+    public function testExceptionInLayout(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files/');
         $renderer->setLayout('exception_layout.phtml');
@@ -169,14 +168,14 @@ class PhpRendererTest extends TestCase
         $this->assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
-    public function testLayoutNotFound()
+    public function testLayoutNotFound(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files/');
         $this->expectException(RuntimeException::class);
         $renderer->setLayout('non-existent_layout.phtml');
     }
 
-    public function testContentDataKeyShouldBeIgnored()
+    public function testContentDataKeyShouldBeIgnored(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files/');
         $renderer->setLayout('layout.phtml');
