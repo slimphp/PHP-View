@@ -97,7 +97,7 @@ class PhpRenderer
             if (!is_file($layoutPath)) {
                 throw new \RuntimeException("Layout template `$layout` does not exist");
             }
-            $this->layout = $layoutPath;
+            $this->layout = $layout;
         }
     }
 
@@ -182,33 +182,12 @@ class PhpRenderer
      * @throws \RuntimeException
      */
     public function fetch($template, array $data = [], $useLayout = false) {
-        if (isset($data['template'])) {
-            throw new \InvalidArgumentException("Duplicate template key found");
-        }
 
-        if (!is_file($this->templatePath . $template)) {
-            throw new \RuntimeException("View cannot render `$template` because the template does not exist");
-        }
+        $output = $this->fetchTemplate($template, $data);
 
-        $data = array_merge($this->attributes, $data);
-
-        try {
-            ob_start();
-            $this->protectedIncludeScope($this->templatePath . $template, $data);
-            $output = ob_get_clean();
-
-            if ($this->layout !== null && $useLayout) {
-                ob_start();
-                $data['content'] = $output;
-                $this->protectedIncludeScope($this->layout, $data);
-                $output = ob_get_clean(); 
-            }
-        } catch(\Throwable $e) { // PHP 7+
-            ob_end_clean();
-            throw $e;
-        } catch(\Exception $e) { // PHP < 7
-            ob_end_clean();
-            throw $e;
+        if ($this->layout !== null && $useLayout) {
+            $data['content'] = $output;
+            $output = $this->fetchTemplate($this->layout, $data);
         }
 
         return $output;
