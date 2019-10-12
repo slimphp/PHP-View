@@ -1,4 +1,6 @@
 <?php
+
+use PHPUnit\Framework\TestCase;
 use Slim\Http\Body;
 use Slim\Http\Headers;
 use Slim\Http\Response;
@@ -9,7 +11,7 @@ use Slim\Http\Response;
  * Date: 2015-11-12
  * Time: 1:19 PM
  */
-class PhpRendererTest extends PHPUnit_Framework_TestCase
+class PhpRendererTest extends TestCase
 {
 
     public function testRenderer() {
