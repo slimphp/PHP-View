@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Response;
@@ -156,7 +158,7 @@ class PhpRendererTest extends TestCase
             $newResponse = $renderer->render($response, "template.phtml");
         } catch (Throwable $t) { // PHP 7+
             // Simulates an error template
-            $renderer->setLayout(null);
+            $renderer->setLayout('');
             $newResponse = $renderer->render($response, "template.phtml", [
                 "hello" => "Hi"
             ]);
