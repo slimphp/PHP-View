@@ -39,7 +39,7 @@ class PhpRenderer
      */
     protected $layout;
 
-    public function __construct(string $templatePath = "", array $attributes = [], string $layout = "")
+    public function __construct(string $templatePath = '', array $attributes = [], string $layout = '')
     {
         $this->templatePath = rtrim($templatePath, '/\\') . '/';
         $this->attributes = $attributes;
@@ -82,7 +82,7 @@ class PhpRenderer
         } else {
             $layoutPath = $this->templatePath . $layout;
             if (!is_file($layoutPath)) {
-                throw new RuntimeException("Layout template `$layout` does not exist");
+                throw new RuntimeException('Layout template "' . $layout . '" does not exist');
             }
             $this->layout = $layout;
         }
@@ -179,7 +179,7 @@ class PhpRenderer
         }
 
         if (!is_file($this->templatePath . $template)) {
-            throw new RuntimeException("View cannot render `$template` because the template does not exist");
+            throw new RuntimeException('View cannot render "' . $template . '" because the template does not exist');
         }
 
         $data = array_merge($this->attributes, $data);
