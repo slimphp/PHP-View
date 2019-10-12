@@ -13,7 +13,7 @@ namespace Slim\Views;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
+use Slim\Views\Exception\PhpTemplateNotFoundException;
 use Throwable;
 
 /**
@@ -52,7 +52,7 @@ class PhpRenderer
      * @note $data cannot contain template as a key
      *
      * @throws InvalidArgumentException
-     * @throws RuntimeException if $templatePath . $template does not exist
+     * @throws PhpTemplateNotFoundException if $templatePath . $template does not exist
      * @throws Throwable
      */
     public function render(ResponseInterface $response, string $template, array $data = []): ResponseInterface
@@ -82,7 +82,7 @@ class PhpRenderer
         } else {
             $layoutPath = $this->templatePath . $layout;
             if (!is_file($layoutPath)) {
-                throw new RuntimeException('Layout template "' . $layout . '" does not exist');
+                throw new PhpTemplateNotFoundException('Layout template "' . $layout . '" does not exist');
             }
             $this->layout = $layout;
         }
@@ -148,7 +148,7 @@ class PhpRenderer
      * @note $data cannot contain template as a key
      *
      * @throws InvalidArgumentException
-     * @throws RuntimeException
+     * @throws PhpTemplateNotFoundException
      * @throws Throwable
      */
     public function fetch(string $template, array $data = [], bool $useLayout = false): string
@@ -169,7 +169,7 @@ class PhpRenderer
      * @note $data cannot contain template as a key
      *
      * @throws InvalidArgumentException
-     * @throws RuntimeException
+     * @throws PhpTemplateNotFoundException
      * @throws Throwable
      */
     public function fetchTemplate(string $template, array $data = []): string
@@ -179,7 +179,8 @@ class PhpRenderer
         }
 
         if (!is_file($this->templatePath . $template)) {
-            throw new RuntimeException('View cannot render "' . $template . '" because the template does not exist');
+            throw new PhpTemplateNotFoundException('View cannot render "' . $template
+                                                   . '" because the template does not exist');
         }
 
         $data = array_merge($this->attributes, $data);
