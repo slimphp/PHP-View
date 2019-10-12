@@ -215,7 +215,7 @@ class PhpRenderer
     }
 
     /**
-     * Renders a template without a layout and returns the result as a string
+     * Renders a template and returns the result as a string
      *
      * cannot contain template as a key
      *
@@ -229,7 +229,7 @@ class PhpRenderer
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function fetchPartial($template, array $data = []) {
+    public function fetchTemplate($template, array $data = []) {
         if (isset($data['template'])) {
             throw new \InvalidArgumentException("Duplicate template key found");
         }
