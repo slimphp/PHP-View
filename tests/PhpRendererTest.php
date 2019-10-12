@@ -125,7 +125,7 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
+        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer</footer></body></html>", $newResponse->getBody()->getContents());
     }
 
     public function testLayoutConstructor() {
@@ -139,7 +139,7 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
+        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer</footer></body></html>", $newResponse->getBody()->getContents());
     }
 
     public function testExceptionInLayout() {
@@ -198,6 +198,6 @@ class PhpRendererTest extends PHPUnit_Framework_TestCase
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi</body></html>", $newResponse->getBody()->getContents());
+        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer</footer></body></html>", $newResponse->getBody()->getContents());
     }
 }
