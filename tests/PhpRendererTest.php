@@ -13,12 +13,6 @@ use Slim\Psr7\Stream;
 use Slim\Views\PhpRenderer;
 use Throwable;
 
-/**
- * Created by PhpStorm.
- * User: Glenn
- * Date: 2015-11-12
- * Time: 1:19 PM
- */
 class PhpRendererTest extends TestCase
 {
 
