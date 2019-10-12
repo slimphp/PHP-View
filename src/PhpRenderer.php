@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 namespace Slim\Views;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -183,10 +183,10 @@ class PhpRenderer
             ob_start();
             $this->protectedIncludeScope($this->templatePath . $template, $data);
             $output = ob_get_clean();
-        } catch(\Throwable $e) { // PHP 7+
+        } catch (\Throwable $e) { // PHP 7+
             ob_end_clean();
             throw $e;
-        } catch(\Exception $e) { // PHP < 7
+        } catch (\Exception $e) { // PHP < 7
             ob_end_clean();
             throw $e;
         }
@@ -197,7 +197,7 @@ class PhpRenderer
     /**
      * Include template within a separate scope for extracted $data
      */
-    protected function protectedIncludeScope (string $template, array $data): void
+    protected function protectedIncludeScope(string $template, array $data): void
     {
         extract($data);
         include func_get_arg(0);
