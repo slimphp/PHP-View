@@ -86,9 +86,6 @@ class PhpRendererTest extends TestCase
         $this->assertEquals("Hi", $newResponse->getBody()->getContents());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testExceptionForTemplateInData()
     {
         $renderer = new PhpRenderer(__DIR__ . "/_files/");
@@ -97,23 +94,21 @@ class PhpRendererTest extends TestCase
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
+        $this->expectException(InvalidArgumentException::class);
         $renderer->render($response, "template.phtml", [
             "template" => "Hi"
         ]);
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testTemplateNotFound()
     {
-
         $renderer = new PhpRenderer(__DIR__ . "/_files/");
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
+        $this->expectException(RuntimeException::class);
         $renderer->render($response, "adfadftemplate.phtml", []);
     }
 
@@ -174,20 +169,11 @@ class PhpRendererTest extends TestCase
         $this->assertEquals("Hi", $newResponse->getBody()->getContents());
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testLayoutNotFound()
     {
-
         $renderer = new PhpRenderer(__DIR__ . "/_files/");
+        $this->expectException(RuntimeException::class);
         $renderer->setLayout("non-existent_layout.phtml");
-
-        $headers = new Headers();
-        $body = new Stream(fopen('php://temp', 'r+'));
-        $response = new Response(200, $headers, $body);
-
-        $renderer->render($response, "template.phtml", []);
     }
 
     public function testContentDataKeyShouldBeIgnored()
