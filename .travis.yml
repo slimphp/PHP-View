@@ -5,13 +5,18 @@ dist: trusty
 matrix:
   include:
   - php: 7.1
-    env: ANALYSIS='true'
   - php: 7.2
   - php: 7.3
+    env: ANALYSIS='true'
   - php: nightly
   allow_failures:
   - php: nightly
 
-before_script: composer install
+before_script:
+  - if [[ "$ANALYSIS" == 'true' ]]; then composer require php-coveralls/php-coveralls:^2.1.0 ; fi
+  - composer install -n
 
-script: vendor/bin/phpunit --coverage-text --configuration phpunit.xml.dist
+script:
+  - if [[ "$ANALYSIS" != 'true' ]]; then vendor/bin/phpunit ; fi
+  - if [[ "$ANALYSIS" == 'true' ]]; then vendor/bin/phpunit --coverage-clover clover.xml ; fi
+  - if [[ "$ANALYSIS" == 'true' ]]; then vendor/bin/phpcs ; fi

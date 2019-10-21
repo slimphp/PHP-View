@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Slim Framework (http://slimframework.com)
  *
@@ -8,8 +11,10 @@
  */
 namespace Slim\Views;
 
-use \InvalidArgumentException;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
+use Throwable;
 
 /**
  * Class PhpRenderer
@@ -34,14 +39,7 @@ class PhpRenderer
      */
     protected $layout;
 
-    /**
-     * SlimRenderer constructor.
-     *
-     * @param string $templatePath
-     * @param array $attributes
-     * @param string $layout
-     */
-    public function __construct($templatePath = "", $attributes = [], $layout = "")
+    public function __construct(string $templatePath = '', array $attributes = [], string $layout = '')
     {
         $this->templatePath = rtrim($templatePath, '/\\') . '/';
         $this->attributes = $attributes;
@@ -51,20 +49,13 @@ class PhpRenderer
     /**
      * Render a template
      *
-     * $data cannot contain template as a key
+     * @note $data cannot contain template as a key
      *
-     * throws RuntimeException if $templatePath . $template does not exist
-     *
-     * @param ResponseInterface $response
-     * @param string             $template
-     * @param array              $data
-     *
-     * @return ResponseInterface
-     *
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException if $templatePath . $template does not exist
+     * @throws Throwable
      */
-    public function render(ResponseInterface $response, $template, array $data = [])
+    public function render(ResponseInterface $response, string $template, array $data = []): ResponseInterface
     {
         $output = $this->fetch($template, $data, true);
 
@@ -75,27 +66,23 @@ class PhpRenderer
 
     /**
      * Get layout template
-     *
-     * @return string
      */
-    public function getLayout()
+    public function getLayout(): string
     {
         return $this->layout;
     }
 
     /**
      * Set layout template
-     *
-     * @param string $layout
      */
-    public function setLayout($layout)
+    public function setLayout(string $layout): void
     {
-        if ($layout === "" || $layout === null) {
+        if ($layout === '' || $layout === null) {
             $this->layout = null;
         } else {
             $layoutPath = $this->templatePath . $layout;
             if (!is_file($layoutPath)) {
-                throw new \RuntimeException("Layout template `$layout` does not exist");
+                throw new RuntimeException('Layout template "' . $layout . '" does not exist');
             }
             $this->layout = $layout;
         }
@@ -103,18 +90,14 @@ class PhpRenderer
 
     /**
      * Get the attributes for the renderer
-     *
-     * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
     /**
      * Set the attributes for the renderer
-     *
-     * @param array $attributes
      */
     public function setAttributes(array $attributes)
     {
@@ -123,21 +106,19 @@ class PhpRenderer
 
     /**
      * Add an attribute
-     *
-     * @param $key
-     * @param $value
      */
-    public function addAttribute($key, $value) {
+    public function addAttribute(string $key, $value): void
+    {
         $this->attributes[$key] = $value;
     }
 
     /**
      * Retrieve an attribute
      *
-     * @param $key
      * @return mixed
      */
-    public function getAttribute($key) {
+    public function getAttribute(string $key)
+    {
         if (!isset($this->attributes[$key])) {
             return false;
         }
@@ -147,20 +128,16 @@ class PhpRenderer
 
     /**
      * Get the template path
-     *
-     * @return string
      */
-    public function getTemplatePath()
+    public function getTemplatePath(): string
     {
         return $this->templatePath;
     }
 
     /**
      * Set the template path
-     *
-     * @param string $templatePath
      */
-    public function setTemplatePath($templatePath)
+    public function setTemplatePath(string $templatePath): void
     {
         $this->templatePath = rtrim($templatePath, '/\\') . '/';
     }
@@ -168,21 +145,14 @@ class PhpRenderer
     /**
      * Renders a template and returns the result as a string
      *
-     * cannot contain template as a key
+     * @note $data cannot contain template as a key
      *
-     * throws RuntimeException if $templatePath . $template does not exist
-     *
-     * @param $template
-     * @param array $data
-     * @param bool $useLayout
-     *
-     * @return mixed
-     *
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws Throwable
      */
-    public function fetch($template, array $data = [], $useLayout = false) {
-
+    public function fetch(string $template, array $data = [], bool $useLayout = false): string
+    {
         $output = $this->fetchTemplate($template, $data);
 
         if ($this->layout !== null && $useLayout) {
@@ -196,25 +166,20 @@ class PhpRenderer
     /**
      * Renders a template and returns the result as a string
      *
-     * cannot contain template as a key
+     * @note $data cannot contain template as a key
      *
-     * throws RuntimeException if $templatePath . $template does not exist
-     *
-     * @param $template
-     * @param array $data
-     *
-     * @return mixed
-     *
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     * @throws Throwable
      */
-    public function fetchTemplate($template, array $data = []) {
+    public function fetchTemplate(string $template, array $data = []): string
+    {
         if (isset($data['template'])) {
-            throw new \InvalidArgumentException("Duplicate template key found");
+            throw new InvalidArgumentException('Duplicate template key found');
         }
 
         if (!is_file($this->templatePath . $template)) {
-            throw new \RuntimeException("View cannot render `$template` because the template does not exist");
+            throw new RuntimeException('View cannot render "' . $template . '" because the template does not exist');
         }
 
         $data = array_merge($this->attributes, $data);
@@ -223,11 +188,7 @@ class PhpRenderer
             ob_start();
             $this->protectedIncludeScope($this->templatePath . $template, $data);
             $output = ob_get_clean();
-
-        } catch(\Throwable $e) { // PHP 7+
-            ob_end_clean();
-            throw $e;
-        } catch(\Exception $e) { // PHP < 7
+        } catch (Throwable $e) {
             ob_end_clean();
             throw $e;
         }
@@ -236,10 +197,10 @@ class PhpRenderer
     }
 
     /**
-     * @param string $template
-     * @param array $data
+     * Include template within a separate scope for extracted $data
      */
-    protected function protectedIncludeScope ($template, array $data) {
+    protected function protectedIncludeScope(string $template, array $data): void
+    {
         extract($data);
         include func_get_arg(0);
     }

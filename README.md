@@ -2,7 +2,7 @@
 
 ## PHP Renderer
 
-This is a renderer for rendering PHP view scripts into a PSR-7 Response object. It works well with Slim Framework 3.
+This is a renderer for rendering PHP view scripts into a PSR-7 Response object. It works well with Slim Framework 4.
 
 
 ### Cross-site scripting (XSS) risks
@@ -17,28 +17,29 @@ Install with [Composer](http://getcomposer.org):
     composer require slim/php-view
 
 
-## Usage with Slim 3
+## Usage with Slim 4
 
 ```php
 use Slim\Views\PhpRenderer;
 
 include "vendor/autoload.php";
 
-$app = new Slim\App();
-$container = $app->getContainer();
-$container['renderer'] = new PhpRenderer("./templates");
+$app = Slim\AppFactor::creates();
 
 $app->get('/hello/{name}', function ($request, $response, $args) {
-    return $this->renderer->render($response, "hello.php", $args);
+    $renderer = new PhpRenderer('path/to/templates');
+    return $renderer->render($response, "hello.php", $args);
 });
 
 $app->run();
 ```
 
+Note that you could place the PhpRenderer instantiation within your DI Container. 
+
 ## Usage with any PSR-7 Project
 ```php
 //Construct the View
-$phpView = new PhpRenderer("./path/to/templates");
+$phpView = new PhpRenderer("path/to/templates");
 
 //Render a Template
 $response = $phpView->render(new Response(), "hello.php", $yourData);
@@ -52,7 +53,7 @@ You can now add variables to your renderer that will be available to all templat
 $templateVariables = [
     "title" => "Title"
 ];
-$phpView = new PhpRenderer("./path/to/templates", $templateVariables);
+$phpView = new PhpRenderer("path/to/templates", $templateVariables);
 
 // or setter
 $phpView->setAttributes($templateVariables);
@@ -66,7 +67,7 @@ Data passed in via `->render()` takes precedence over attributes.
 $templateVariables = [
     "title" => "Title"
 ];
-$phpView = new PhpRenderer("./path/to/templates", $templateVariables);
+$phpView = new PhpRenderer("path/to/templates", $templateVariables);
 
 //...
 
@@ -83,19 +84,19 @@ Inside your templates you may use `$this` to refer to the PhpRenderer object to 
 You can now render view in another views called layouts, this allows you to compose modular view templates
 and help keep your views DRY.
 
-Create your layout `./path/to/templates/layout.php`.
+Create your layout `path/to/templates/layout.php`.
 ```phtml
 <html><head><title><?=$title?></title></head><body><?=$content?></body></html>
 ```
 
-Create your view template `./path/to/templates/hello.php`.
+Create your view template `path/to/templates/hello.php`.
 ```phtml
 Hello <?=$name?>!
 ```
 
 Rendering in your code.
 ```php
-$phpView = new PhpRenderer("./path/to/templates", ["title" => "My App"]);
+$phpView = new PhpRenderer("path/to/templates", ["title" => "My App"]);
 $phpView->setLayout("layout.php");
 
 //...

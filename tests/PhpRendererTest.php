@@ -1,205 +1,198 @@
 <?php
 
+declare(strict_types=1);
+
+namespace Slim\ViewsTest;
+
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Response;
 use Slim\Psr7\Stream;
+use Slim\Views\PhpRenderer;
+use Throwable;
 
-/**
- * Created by PhpStorm.
- * User: Glenn
- * Date: 2015-11-12
- * Time: 1:19 PM
- */
 class PhpRendererTest extends TestCase
 {
-
-    public function testRenderer() {
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files/");
-
-        $headers = new Headers();
-        $body = new Stream(fopen('php://temp', 'r+'));
-        $response = new Response(200, $headers, $body);
-
-        $newResponse = $renderer->render($response, "template.phtml", array("hello" => "Hi"));
-
-        $newResponse->getBody()->rewind();
-
-        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
-    }
-
-    public function testRenderConstructor() {
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files");
+    public function testRenderer(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files/');
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $newResponse = $renderer->render($response, "template.phtml", array("hello" => "Hi"));
+        $newResponse = $renderer->render($response, 'template.phtml', ['hello' => 'Hi']);
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+        $this->assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
-    public function testAttributeMerging() {
+    public function testRenderConstructor(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files');
 
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files/", [
-            "hello" => "Hello"
+        $headers = new Headers();
+        $body = new Stream(fopen('php://temp', 'r+'));
+        $response = new Response(200, $headers, $body);
+
+        $newResponse = $renderer->render($response, 'template.phtml', ['hello' => 'Hi']);
+
+        $newResponse->getBody()->rewind();
+
+        $this->assertEquals('Hi', $newResponse->getBody()->getContents());
+    }
+
+    public function testAttributeMerging(): void
+    {
+
+        $renderer = new PhpRenderer(__DIR__ . '/_files/', [
+            'hello' => 'Hello'
         ]);
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $newResponse = $renderer->render($response, "template.phtml", [
-            "hello" => "Hi"
+        $newResponse = $renderer->render($response, 'template.phtml', [
+            'hello' => 'Hi'
         ]);
         $newResponse->getBody()->rewind();
-        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+        $this->assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
-    public function testExceptionInTemplate() {
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files/");
+    public function testExceptionInTemplate(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files/');
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
         try {
-            $newResponse = $renderer->render($response, "testException.php");
-        } catch (Throwable $t) { // PHP 7+
+            $newResponse = $renderer->render($response, 'exception_layout.phtml');
+        } catch (Throwable $t) {
             // Simulates an error template
-            $newResponse = $renderer->render($response, "template.phtml", [
-                "hello" => "Hi"
-            ]);
-        } catch (Exception $e) { // PHP < 7
-            // Simulates an error template
-            $newResponse = $renderer->render($response, "template.phtml", [
-                "hello" => "Hi"
+            $newResponse = $renderer->render($response, 'template.phtml', [
+                'hello' => 'Hi'
             ]);
         }
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+        $this->assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testExceptionForTemplateInData() {
-
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files/");
+    public function testExceptionForTemplateInData(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files/');
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $renderer->render($response, "template.phtml", [
-            "template" => "Hi"
+        $this->expectException(InvalidArgumentException::class);
+        $renderer->render($response, 'template.phtml', [
+            'template' => 'Hi'
         ]);
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
-    public function testTemplateNotFound() {
-
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files/");
+    public function testTemplateNotFound(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files/');
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $renderer->render($response, "adfadftemplate.phtml", []);
+        $this->expectException(RuntimeException::class);
+        $renderer->render($response, 'adfadftemplate.phtml', []);
     }
 
-    public function testLayout() {
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files/", ["title" => "My App"]);
-        $renderer->setLayout("layout.phtml");
+    public function testLayout(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files/', ['title' => 'My App']);
+        $renderer->setLayout('layout.phtml');
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $newResponse = $renderer->render($response, "template.phtml", array("title" => "Hello - My App", "hello" => "Hi"));
+        $newResponse = $renderer->render($response, 'template.phtml', ['title' => 'Hello - My App', 'hello' => 'Hi']);
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer</footer></body></html>", $newResponse->getBody()->getContents());
+        $this->assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
+                            . '</footer></body></html>', $newResponse->getBody()->getContents());
     }
 
-    public function testLayoutConstructor() {
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files", ["title" => "My App"], "layout.phtml");
+    public function testLayoutConstructor(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files', ['title' => 'My App'], 'layout.phtml');
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $newResponse = $renderer->render($response, "template.phtml", array("title" => "Hello - My App", "hello" => "Hi"));
+        $newResponse = $renderer->render($response, 'template.phtml', ['title' => 'Hello - My App', 'hello' => 'Hi']);
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer</footer></body></html>", $newResponse->getBody()->getContents());
+        $this->assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
+                            . '</footer></body></html>', $newResponse->getBody()->getContents());
     }
 
-    public function testExceptionInLayout() {
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files/");
-        $renderer->setLayout("exception_layout.phtml");
+    public function testExceptionInLayout(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files/');
+        $renderer->setLayout('exception_layout.phtml');
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
         try {
-            $newResponse = $renderer->render($response, "template.phtml");
+            $newResponse = $renderer->render($response, 'template.phtml');
         } catch (Throwable $t) { // PHP 7+
             // Simulates an error template
-            $renderer->setLayout(null);
-            $newResponse = $renderer->render($response, "template.phtml", [
-                "hello" => "Hi"
-            ]);
-        } catch (Exception $e) { // PHP < 7
-            // Simulates an error template
-            $renderer->setLayout(null);
-            $newResponse = $renderer->render($response, "template.phtml", [
-                "hello" => "Hi"
+            $renderer->setLayout('');
+            $newResponse = $renderer->render($response, 'template.phtml', [
+                'hello' => 'Hi'
             ]);
         }
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("Hi", $newResponse->getBody()->getContents());
+        $this->assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
-    public function testLayoutNotFound() {
+    public function testLayoutNotFound(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files/');
+        $this->expectException(RuntimeException::class);
+        $renderer->setLayout('non-existent_layout.phtml');
+    }
 
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files/");
-        $renderer->setLayout("non-existent_layout.phtml");
+    public function testContentDataKeyShouldBeIgnored(): void
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files/');
+        $renderer->setLayout('layout.phtml');
 
         $headers = new Headers();
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $renderer->render($response, "template.phtml", []);
-    }
-
-    public function testContentDataKeyShouldBeIgnored() {
-        $renderer = new \Slim\Views\PhpRenderer(__DIR__ . "/_files/");
-        $renderer->setLayout("layout.phtml");
-
-        $headers = new Headers();
-        $body = new Stream(fopen('php://temp', 'r+'));
-        $response = new Response(200, $headers, $body);
-
-        $newResponse = $renderer->render($response, "template.phtml", array("title" => "Hello - My App", "hello" => "Hi", "content" => "Ho"));
+        $newResponse = $renderer->render(
+            $response,
+            'template.phtml',
+            ['title' => 'Hello - My App', 'hello' => 'Hi', 'content' => 'Ho']
+        );
 
         $newResponse->getBody()->rewind();
 
-        $this->assertEquals("<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer</footer></body></html>", $newResponse->getBody()->getContents());
+        $this->assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
+                            . '</footer></body></html>', $newResponse->getBody()->getContents());
     }
 }
