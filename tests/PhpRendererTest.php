@@ -6,10 +6,10 @@ namespace Slim\ViewsTest;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Response;
 use Slim\Psr7\Stream;
+use Slim\Views\Exception\PhpTemplateNotFoundException;
 use Slim\Views\PhpRenderer;
 use Throwable;
 
@@ -107,7 +107,7 @@ class PhpRendererTest extends TestCase
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(200, $headers, $body);
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(PhpTemplateNotFoundException::class);
         $renderer->render($response, 'adfadftemplate.phtml', []);
     }
 
@@ -171,7 +171,7 @@ class PhpRendererTest extends TestCase
     public function testLayoutNotFound(): void
     {
         $renderer = new PhpRenderer(__DIR__ . '/_files/');
-        $this->expectException(RuntimeException::class);
+        $this->expectException(PhpTemplateNotFoundException::class);
         $renderer->setLayout('non-existent_layout.phtml');
     }
 
