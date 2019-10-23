@@ -1,14 +1,12 @@
 <?php
+/**
+ * Slim Framework (https://slimframework.com)
+ *
+ * @license https://github.com/slimphp/PHP-View/blob/3.x/LICENSE.md (MIT License)
+ */
 
 declare(strict_types=1);
 
-/**
- * Slim Framework (http://slimframework.com)
- *
- * @link      https://github.com/slimphp/PHP-View
- * @copyright Copyright (c) 2011-2015 Josh Lockhart
- * @license   https://github.com/slimphp/PHP-View/blob/master/LICENSE.md (MIT License)
- */
 namespace Slim\Views;
 
 use InvalidArgumentException;
@@ -16,29 +14,25 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Exception\PhpTemplateNotFoundException;
 use Throwable;
 
-/**
- * Class PhpRenderer
- * @package Slim\Views
- *
- * Render PHP view scripts into a PSR-7 Response object
- */
 class PhpRenderer
 {
     /**
      * @var string
      */
     protected $templatePath;
-
-    /**
+/**
      * @var array
      */
     protected $attributes;
-
-    /**
+/**
      * @var string
      */
     protected $layout;
-
+/**
+     * @param string $templatePath
+     * @param array  $attributes
+     * @param string $layout
+     */
     public function __construct(string $templatePath = '', array $attributes = [], string $layout = '')
     {
         $this->templatePath = rtrim($templatePath, '/\\') . '/';
@@ -47,25 +41,23 @@ class PhpRenderer
     }
 
     /**
-     * Render a template
+     * @param ResponseInterface $response
+     * @param string            $template
+     * @param array             $data
      *
-     * @note $data cannot contain template as a key
+     * @return ResponseInterface
      *
-     * @throws InvalidArgumentException
-     * @throws PhpTemplateNotFoundException if $templatePath . $template does not exist
      * @throws Throwable
      */
     public function render(ResponseInterface $response, string $template, array $data = []): ResponseInterface
     {
         $output = $this->fetch($template, $data, true);
-
         $response->getBody()->write($output);
-
         return $response;
     }
 
     /**
-     * Get layout template
+     * @return string
      */
     public function getLayout(): string
     {
@@ -73,7 +65,7 @@ class PhpRenderer
     }
 
     /**
-     * Set layout template
+     * @param string $layout
      */
     public function setLayout(string $layout): void
     {
@@ -89,7 +81,7 @@ class PhpRenderer
     }
 
     /**
-     * Get the attributes for the renderer
+     * @return array
      */
     public function getAttributes(): array
     {
@@ -97,15 +89,20 @@ class PhpRenderer
     }
 
     /**
-     * Set the attributes for the renderer
+     * @param array $attributes
+     *
+     * @return void
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): void
     {
         $this->attributes = $attributes;
     }
 
     /**
-     * Add an attribute
+     * @param string $key
+     * @param        $value
+     *
+     * @return void
      */
     public function addAttribute(string $key, $value): void
     {
@@ -113,9 +110,9 @@ class PhpRenderer
     }
 
     /**
-     * Retrieve an attribute
+     * @param string $key
      *
-     * @return mixed
+     * @return bool|mixed
      */
     public function getAttribute(string $key)
     {
@@ -127,7 +124,7 @@ class PhpRenderer
     }
 
     /**
-     * Get the template path
+     * @return string
      */
     public function getTemplatePath(): string
     {
@@ -135,7 +132,7 @@ class PhpRenderer
     }
 
     /**
-     * Set the template path
+     * @param string $templatePath
      */
     public function setTemplatePath(string $templatePath): void
     {
@@ -143,18 +140,17 @@ class PhpRenderer
     }
 
     /**
-     * Renders a template and returns the result as a string
+     * @param string $template
+     * @param array  $data
+     * @param bool   $useLayout
      *
-     * @note $data cannot contain template as a key
+     * @return string
      *
-     * @throws InvalidArgumentException
-     * @throws PhpTemplateNotFoundException
      * @throws Throwable
      */
     public function fetch(string $template, array $data = [], bool $useLayout = false): string
     {
         $output = $this->fetchTemplate($template, $data);
-
         if ($this->layout !== null && $useLayout) {
             $data['content'] = $output;
             $output = $this->fetchTemplate($this->layout, $data);
@@ -164,12 +160,11 @@ class PhpRenderer
     }
 
     /**
-     * Renders a template and returns the result as a string
+     * @param string $template
+     * @param array  $data
      *
-     * @note $data cannot contain template as a key
+     * @return string
      *
-     * @throws InvalidArgumentException
-     * @throws PhpTemplateNotFoundException
      * @throws Throwable
      */
     public function fetchTemplate(string $template, array $data = []): string
@@ -184,7 +179,6 @@ class PhpRenderer
         }
 
         $data = array_merge($this->attributes, $data);
-
         try {
             ob_start();
             $this->protectedIncludeScope($this->templatePath . $template, $data);
@@ -198,7 +192,10 @@ class PhpRenderer
     }
 
     /**
-     * Include template within a separate scope for extracted $data
+     * @param string $template
+     * @param array  $data
+     *
+     * @return void
      */
     protected function protectedIncludeScope(string $template, array $data): void
     {
