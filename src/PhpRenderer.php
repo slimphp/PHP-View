@@ -10,9 +10,14 @@ declare(strict_types=1);
 namespace Slim\Views;
 
 use InvalidArgumentException;
+use RuntimeException;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Exception\PhpTemplateNotFoundException;
 use Throwable;
+
+use function rtrim, ltrim, is_file, ob_start, ob_end_clean, ob_get_clean, extract;
+
+use const PHP_EOL, EXTR_SKIP;
 
 class PhpRenderer
 {
@@ -20,23 +25,23 @@ class PhpRenderer
      * @var string
      */
     protected $templatePath;
-/**
+    /**
      * @var array
      */
     protected $attributes;
-/**
+    /**
      * @var string
      */
     protected $layout;
-/**
+    /**
      * @param string $templatePath
      * @param array  $attributes
      * @param string $layout
      */
     public function __construct(string $templatePath = '', array $attributes = [], string $layout = '')
     {
-        $this->templatePath = rtrim($templatePath, '/\\') . '/';
-        $this->attributes = $attributes;
+        $this->setTemplatePath($templatePath);
+        $this->setAttributes($attributes);
         $this->setLayout($layout);
     }
 
@@ -63,21 +68,19 @@ class PhpRenderer
     {
         return $this->layout;
     }
-
+    
     /**
      * @param string $layout
      */
     public function setLayout(string $layout): void
     {
-        if ($layout === '' || $layout === null) {
-            $this->layout = null;
-        } else {
-            $layoutPath = $this->templatePath . $layout;
-            if (!is_file($layoutPath)) {
+        if ($layout) {
+            $layout = ltrim($layout, '\/');
+            if (! is_file($this->templatePath . $layout)) {
                 throw new PhpTemplateNotFoundException('Layout template "' . $layout . '" does not exist');
             }
-            $this->layout = $layout;
         }
+        $this->layout = $layout;
     }
 
     /**
@@ -111,16 +114,13 @@ class PhpRenderer
 
     /**
      * @param string $key
+     * @param mixed $default
      *
-     * @return bool|mixed
+     * @return mixed
      */
-    public function getAttribute(string $key)
+    public function getAttribute(string $key, $default = false)
     {
-        if (!isset($this->attributes[$key])) {
-            return false;
-        }
-
-        return $this->attributes[$key];
+        return $this->attributes[$key] ?? $default;
     }
 
     /**
@@ -136,7 +136,7 @@ class PhpRenderer
      */
     public function setTemplatePath(string $templatePath): void
     {
-        $this->templatePath = rtrim($templatePath, '/\\') . '/';
+        $this->templatePath = rtrim($templatePath, '\/') . PHP_EOL;
     }
 
     /**
@@ -151,7 +151,7 @@ class PhpRenderer
     public function fetch(string $template, array $data = [], bool $useLayout = false): string
     {
         $output = $this->fetchTemplate($template, $data);
-        if ($this->layout !== null && $useLayout) {
+        if ($this->layout && $useLayout) {
             $data['content'] = $output;
             $output = $this->fetchTemplate($this->layout, $data);
         }
@@ -172,34 +172,36 @@ class PhpRenderer
         if (isset($data['template'])) {
             throw new InvalidArgumentException('Duplicate template key found');
         }
-
-        if (!is_file($this->templatePath . $template)) {
-            throw new PhpTemplateNotFoundException('View cannot render "' . $template
-                                                   . '" because the template does not exist');
+        
+        $template = ltrim($template, '\/');
+        if (! is_file($this->templatePath . $template)) {
+            throw new PhpTemplateNotFoundException(
+                'View cannot render "' . $template . '" because the template does not exist'
+            );
         }
 
-        $data = array_merge($this->attributes, $data);
+        $data += $this->attributes;
+        ob_start();
         try {
-            ob_start();
             $this->protectedIncludeScope($this->templatePath . $template, $data);
-            $output = ob_get_clean();
         } catch (Throwable $e) {
             ob_end_clean();
-            throw $e;
+            $message = 'Error at rendering template "' . $template . '": ' . $e->getMessage();
+            throw new RuntimeException($message, 0, $e);
         }
 
-        return $output;
+        return ob_get_clean();
     }
 
     /**
-     * @param string $template
-     * @param array  $data
+     * @param string $php_view_template
+     * @param array  $php_view_data
      *
      * @return void
      */
-    protected function protectedIncludeScope(string $template, array $data): void
+    protected function protectedIncludeScope(string $php_view_template, array $php_view_data): void
     {
-        extract($data);
-        include func_get_arg(0);
+        extract($php_view_data, EXTR_SKIP);
+        include $php_view_template;
     }
 }
