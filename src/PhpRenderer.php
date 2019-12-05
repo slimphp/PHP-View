@@ -14,10 +14,16 @@ use RuntimeException;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Exception\PhpTemplateNotFoundException;
 use Throwable;
+use function realpath;
+use function ltrim;
+use function is_file;
+use function ob_start;
+use function ob_end_clean;
+use function ob_get_clean;
+use function extract;
 
-use function rtrim, ltrim, is_file, ob_start, ob_end_clean, ob_get_clean, extract;
-
-use const DIRECTORY_SEPARATOR, EXTR_SKIP;
+use const DIRECTORY_SEPARATOR;
+use const EXTR_SKIP;
 
 class PhpRenderer
 {
