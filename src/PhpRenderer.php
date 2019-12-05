@@ -17,7 +17,7 @@ use Throwable;
 
 use function rtrim, ltrim, is_file, ob_start, ob_end_clean, ob_get_clean, extract;
 
-use const PHP_EOL, EXTR_SKIP;
+use const DIRECTORY_SEPARATOR, EXTR_SKIP;
 
 class PhpRenderer
 {
@@ -120,7 +120,11 @@ class PhpRenderer
      */
     public function getAttribute(string $key, $default = false)
     {
-        return $this->attributes[$key] ?? $default;
+        if (key_exists($key, $this->attributes)) {
+            return $this->attributes[$key];
+        }
+        
+        return $default;
     }
 
     /**
@@ -136,7 +140,7 @@ class PhpRenderer
      */
     public function setTemplatePath(string $templatePath): void
     {
-        $this->templatePath = rtrim($templatePath, '\/') . PHP_EOL;
+        $this->templatePath = rtrim($templatePath, '\/') . DIRECTORY_SEPARATOR;
     }
 
     /**
