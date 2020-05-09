@@ -7,7 +7,7 @@ This is a renderer for rendering PHP view scripts into a PSR-7 Response object. 
 
 ### Cross-site scripting (XSS) risks
 
-Note that PHP-View has no built-in mitigation from XSS attacks. It is the developer's responsibility to use `htmlspecialchars()` or a component like [zend-escaper](https://github.com/zendframework/zend-escaper). Alternatively, consider  [Twig-View](https://github.com/slimphp/Twig-View).
+Note that PHP-View has no built-in mitigation from XSS attacks. It is the developer's responsibility to use `htmlspecialchars()` or a component like [laminas-escaper](https://github.com/laminas/laminas-escaper). Alternatively, consider  [Twig-View](https://github.com/slimphp/Twig-View).
 
 
 ## Installation
