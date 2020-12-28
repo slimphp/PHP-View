@@ -24,7 +24,7 @@ use Slim\Views\PhpRenderer;
 
 include "vendor/autoload.php";
 
-$app = Slim\AppFactor::creates();
+$app = Slim\AppFactory::create();
 
 $app->get('/hello/{name}', function ($request, $response, $args) {
     $renderer = new PhpRenderer('path/to/templates');
