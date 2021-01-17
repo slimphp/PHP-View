@@ -44,7 +44,6 @@ class PhpRendererTest extends TestCase
 
     public function testAttributeMerging(): void
     {
-
         $renderer = new PhpRenderer(__DIR__ . '/_files/', [
             'hello' => 'Hello'
         ]);
@@ -55,7 +54,7 @@ class PhpRendererTest extends TestCase
             'hello' => 'Hi'
         ]);
         $newResponse->getBody()->rewind();
-        $this->assertEquals('Hi', $newResponse->getBody()->getContents());
+        self::assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
     public function testExceptionInTemplate(): void
@@ -74,7 +73,7 @@ class PhpRendererTest extends TestCase
         }
 
         $newResponse->getBody()->rewind();
-        $this->assertEquals('Hi', $newResponse->getBody()->getContents());
+        self::assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
     public function testExceptionForTemplateInData(): void
@@ -108,7 +107,7 @@ class PhpRendererTest extends TestCase
         $response = new Response(200, $headers, $body);
         $newResponse = $renderer->render($response, 'template.phtml', ['title' => 'Hello - My App', 'hello' => 'Hi']);
         $newResponse->getBody()->rewind();
-        $this->assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
+        self::assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
                             . '</footer></body></html>', $newResponse->getBody()->getContents());
     }
 
@@ -120,7 +119,7 @@ class PhpRendererTest extends TestCase
         $response = new Response(200, $headers, $body);
         $newResponse = $renderer->render($response, 'template.phtml', ['title' => 'Hello - My App', 'hello' => 'Hi']);
         $newResponse->getBody()->rewind();
-        $this->assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
+        self::assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
                             . '</footer></body></html>', $newResponse->getBody()->getContents());
     }
 
@@ -143,7 +142,7 @@ class PhpRendererTest extends TestCase
         }
 
         $newResponse->getBody()->rewind();
-        $this->assertEquals('Hi', $newResponse->getBody()->getContents());
+        self::assertEquals('Hi', $newResponse->getBody()->getContents());
     }
 
     public function testLayoutNotFound(): void
@@ -166,7 +165,7 @@ class PhpRendererTest extends TestCase
             ['title' => 'Hello - My App', 'hello' => 'Hi', 'content' => 'Ho']
         );
         $newResponse->getBody()->rewind();
-        $this->assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
+        self::assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
                             . '</footer></body></html>', $newResponse->getBody()->getContents());
     }
 }
