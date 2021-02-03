@@ -78,7 +78,11 @@ $phpView->render($response, $template, [
 ```
 
 ## Sub-templates
-Inside your templates you may use `$this` to refer to the PhpRenderer object to render sub-templates.
+Inside your templates you may use `$this` to refer to the PhpRenderer object to render sub-templates. If using a layout the `fetch()` method can be used instead of `render()` to avoid appling the layout to the sub-template.
+
+```phtml
+<?=$this->fetch('./path/to/partial.phtml', ["name" => "John"])?>
+```
 
 ## Rendering in Layouts
 You can now render view in another views called layouts, this allows you to compose modular view templates
