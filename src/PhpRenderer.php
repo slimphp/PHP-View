@@ -72,8 +72,7 @@ class PhpRenderer
         if ($layout === '' || $layout === null) {
             $this->layout = null;
         } else {
-            $layoutPath = $this->templatePath . $layout;
-            if (!is_file($layoutPath)) {
+            if (!$this->templateExists($layout)) {
                 throw new PhpTemplateNotFoundException('Layout template "' . $layout . '" does not exist');
             }
             $this->layout = $layout;
@@ -173,7 +172,7 @@ class PhpRenderer
             throw new InvalidArgumentException('Duplicate template key found');
         }
 
-        if (!is_file($this->templatePath . $template)) {
+        if (!$this->templateExists($template)) {
             throw new PhpTemplateNotFoundException('View cannot render "' . $template
                                                    . '" because the template does not exist');
         }
@@ -189,6 +188,19 @@ class PhpRenderer
         }
 
         return $output;
+    }
+
+    /**
+     * Returns true is template exists, false if not
+     *
+     * @param $template
+     *
+     * @return bool
+     */
+    public function templateExists(string $template) : bool
+    {
+        $path = $this->templatePath . $template;
+        return is_file($path) && is_readable($path);
     }
 
     /**

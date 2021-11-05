@@ -169,4 +169,11 @@ class PhpRendererTest extends TestCase
         $this->assertEquals('<html><head><title>Hello - My App</title></head><body>Hi<footer>This is the footer'
                             . '</footer></body></html>', $newResponse->getBody()->getContents());
     }
+
+    public function testTemplateExists()
+    {
+        $renderer = new PhpRenderer(__DIR__ . '/_files/');
+        $this->assertTrue($renderer->templateExists('layout.phtml'));
+        $this->assertFalse($renderer->templateExists('non-existant-template'));
+    }
 }
