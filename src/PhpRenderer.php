@@ -61,16 +61,21 @@ class PhpRenderer
     /**
      * @param string $layout
      */
+
+    /**
+     * @param string $layout
+     *
+     * @return void
+     *
+     * @throws PhpTemplateNotFoundException
+     */
     public function setLayout(string $layout): void
     {
-        if ($layout === '' || $layout === null) {
-            $this->layout = null;
-        } else {
-            if (!$this->templateExists($layout)) {
-                throw new PhpTemplateNotFoundException('Layout template "' . $layout . '" does not exist');
-            }
-            $this->layout = $layout;
+        if ($layout && !$this->templateExists($layout)) {
+            throw new PhpTemplateNotFoundException('Layout template "' . $layout . '" does not exist');
         }
+
+        $this->layout = $layout;
     }
 
     /**
@@ -144,7 +149,7 @@ class PhpRenderer
     public function fetch(string $template, array $data = [], bool $useLayout = false): string
     {
         $output = $this->fetchTemplate($template, $data);
-        if ($this->layout !== null && $useLayout) {
+        if ($this->layout && $useLayout) {
             $data['content'] = $output;
             $output = $this->fetchTemplate($this->layout, $data);
         }
