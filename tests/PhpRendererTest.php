@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Slim\ViewsTest;
+namespace Slim\Tests;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;

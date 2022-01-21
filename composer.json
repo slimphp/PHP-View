@@ -32,6 +32,11 @@
         "slim/psr7": "^1.5",
         "squizlabs/php_codesniffer": "^3.6"
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Slim\\Tests\\": "tests"
+        }
+    },
     "scripts": {
         "test": "phpunit --configuration phpunit.xml.dist",
         "test:coverage": "phpunit --configuration phpunit.xml.dist --coverage-clover build/logs/clover.xml --coverage-html build/coverage"
