@@ -16,19 +16,13 @@ use Throwable;
 
 class PhpRenderer
 {
+    protected string $templatePath;
+
+    protected array $attributes;
+
+    protected string $layout;
+
     /**
-     * @var string
-     */
-    protected $templatePath;
-/**
-     * @var array
-     */
-    protected $attributes;
-/**
-     * @var string
-     */
-    protected $layout;
-/**
      * @param string $templatePath
      * @param array  $attributes
      * @param string $layout
@@ -193,7 +187,7 @@ class PhpRenderer
     /**
      * Returns true is template exists, false if not
      *
-     * @param $template
+     * @param string $template
      *
      * @return bool
      */
