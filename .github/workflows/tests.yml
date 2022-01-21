@@ -6,17 +6,13 @@ jobs:
     tests:
         name: Tests PHP ${{ matrix.php }}
         runs-on: ubuntu-latest
-        continue-on-error: ${{ matrix.experimental }}
         strategy:
             fail-fast: false
             matrix:
-                php: [7.3, 7.4, 8.0]
-                experimental: [false]
+                php: [7.4, 8.0, 8.1]
                 include:
-                    - php: 8.0
-                      analysis: true
                     - php: 8.1
-                      experimental: true
+                      analysis: true
 
         steps:
             - name: Checkout
@@ -29,7 +25,7 @@ jobs:
                   coverage: xdebug
 
             - name: Install dependencies with Composer
-              uses: ramsey/composer-install@v1
+              uses: ramsey/composer-install@v2
 
             - name: Coding standards
               if: matrix.analysis
