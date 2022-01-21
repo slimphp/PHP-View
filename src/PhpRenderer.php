@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -196,7 +197,7 @@ class PhpRenderer
      *
      * @return bool
      */
-    public function templateExists(string $template) : bool
+    public function templateExists(string $template): bool
     {
         $path = $this->templatePath . $template;
         return is_file($path) && is_readable($path);
