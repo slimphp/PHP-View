@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -7,4 +8,4 @@
 
 declare(strict_types=1);
 
-include "vendor/autoload.php";
+include 'vendor/autoload.php';
