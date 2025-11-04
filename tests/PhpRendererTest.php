@@ -139,7 +139,9 @@ class PhpRendererTest extends TestCase
         $body = $this->createStream();
         $response = new Response(200, $headers, $body);
         try {
-            $newResponse = $renderer->render($response, 'template.phtml');
+            $newResponse = $renderer->render($response, 'template.phtml', [
+                'hello' => 'Hi'
+            ]);
         } catch (Throwable $t) {
             // PHP 7+
             // Simulates an error template
